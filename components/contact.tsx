@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import {
   Input,
   Textarea,
@@ -15,11 +15,11 @@ import {
 import { Close, Connect, Social } from "@/components/nav";
 import codes from "@/data/CountryCodes.json";
 import { useFormStatus } from "react-dom";
-import { submit } from "@/app/actions";
-import Lottie, { LottieRefCurrentProps } from "lottie-react";
+import Lottie from "lottie-react";
 import { replaceColor } from "lottie-colorify";
 import sentAnimation from "@/public/graphics/animations/sent.json";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
+import emailjs from "@emailjs/browser";
 
 const Contact = () => {
   const [sent, send] = useState<boolean>(false),
@@ -29,7 +29,8 @@ const Contact = () => {
     { pending } = useFormStatus(),
     [privacy, setPrivacy] = useState(false),
     [terms, setTerms] = useState(false),
-    { onClose, onOpenChange } = useDisclosure();
+    { onClose, onOpenChange } = useDisclosure(),
+    form = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
@@ -63,6 +64,26 @@ const Contact = () => {
         e.target.value = e.target.value.replace(/[^0-9]/g, "");
         break;
     }
+  };
+
+  const sendEmail = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    emailjs
+      .sendForm(
+        process.env.NEXT_PUBLIC_SERVICE_ID!,
+        process.env.NEXT_PUBLIC_TEMPLATE_ID!,
+        form.current!,
+        { publicKey: process.env.NEXT_PUBLIC_KEY },
+      )
+      .then(
+        () => {
+          send(true);
+        },
+        (error) => {
+          console.log("FAILED...", error.text);
+        },
+      );
   };
 
   return (
@@ -142,11 +163,13 @@ const Contact = () => {
           </div>
         ) : (
           <form
-            action={async (formData) =>
+            ref={form}
+            onSubmit={(e) => sendEmail}
+            /*action={async (formData) =>
               await submit({ formData: formData, dialCode: code }).then(() =>
                 send(true),
               )
-            }
+            }*/
             className={
               "w-full h-full md:w-[56vh] flex flex-col justify-between items-start containerize md:px-[2vw] bg-white gap-[2vh] md:gap-[4vh] py-[2vh] md:py-[4vh]"
             }
@@ -154,7 +177,7 @@ const Contact = () => {
             <Input
               label={"Name"}
               type={"text"}
-              name={"name"}
+              name={"from_name"}
               isDisabled={pending}
               isRequired={true}
               variant={"underlined"}

@@ -6,6 +6,7 @@ import falcon7x from "@/public/graphics/images/Falcon-7X-JetHouse.webp";
 import { useEffect, useState } from "react";
 import { getWeatherData } from "@/app/actions";
 import AutoScroll from "embla-carousel-auto-scroll";
+import axios from "axios";
 
 const Strip = () => {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [
@@ -29,6 +30,20 @@ const Strip = () => {
   const [temperatures, setTemperatures] = useState<string[]>([]);
 
   useEffect(() => {
+    const getWeatherData = async (cities: string[]) => {
+      const apiKey = process.env.OPEN_WEATHER_MAP_API_KEY;
+      const baseUrl = "https://api.openweathermap.org/data/2.5/weather";
+      const responses = await Promise.all(
+        cities.map((city) =>
+          axios.get(`${baseUrl}?q=${city}&appid=${apiKey}&units=metric`),
+        ),
+      );
+      console.log(responses);
+      //@ts-ignore
+      return responses.map(
+        (res) => `${res.data.name} ${Math.round(res.data.main.temp)}°C`,
+      );
+    };
     getWeatherData(cities).then((res) => {
       setTemperatures(res);
     });

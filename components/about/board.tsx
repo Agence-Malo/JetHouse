@@ -3,6 +3,7 @@
 import Image, { StaticImageData } from "next/image";
 import Herve from "@/public/graphics/images/about/herve.webp";
 import Tina from "@/public/graphics/images/about/tina.webp";
+import Nicolas from "@/public/graphics/images/about/nicolas.webp";
 import { useRef } from "react";
 import { useInView } from "framer-motion";
 
@@ -92,6 +93,7 @@ const Board = () => {
           className={`${isInView ? "opacity-100" : "opacity-0"} transition-opacity duration-1000 lg:delay-[400ms] delay-[2000ms] ease-in-out w-full lg:w-1/3`}
         >
           <Profile
+            img={Nicolas}
             name={"Nicolas Willemot"}
             position={"CFO of JetHouse"}
             description={

@@ -38,6 +38,7 @@ export const submit = async ({
     text: `${rawFormData.message}\n\n${rawFormData.name}\n\n${rawFormData.email}\n${rawFormData.tel && typeof rawFormData.tel === "string" && rawFormData.tel.length > 0 ? dialCode + rawFormData.tel : "(No phone number provided)"}`,
   });
 };
+
 export const getWeatherData = async (cities: string[]) => {
   const apiKey = process.env.OPEN_WEATHER_MAP_API_KEY;
   const baseUrl = "https://api.openweathermap.org/data/2.5/weather";
