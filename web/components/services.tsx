@@ -69,11 +69,9 @@ const Services = () => {
   const [service, setService] = useState<
     "management" | "charter" | "consulting" | null
   >(null);
-  const [emblaRef] = useEmblaCarousel({ loop: true }, [
+  const [emblaRef] = useEmblaCarousel({ loop: true, align: "start" }, [
     AutoScroll({
-      loop: true,
       speed: 1,
-      align: "start",
     }),
   ]);
   const Close = () => {

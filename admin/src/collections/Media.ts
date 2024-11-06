@@ -7,9 +7,16 @@ export const Media: CollectionConfig = {
   },
   upload: {
     disableLocalStorage: true,
+    formatOptions: {
+      format: 'webp',
+    },
     resizeOptions: {
       width: 2560,
+      withoutEnlargement: true,
+      fastShrinkOnLoad: false,
     },
+    focalPoint: false,
+    mimeTypes: ['image/*', 'application/pdf'],
   },
   fields: [
     {

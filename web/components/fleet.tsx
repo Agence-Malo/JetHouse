@@ -1,14 +1,34 @@
 "use client";
+
 import fleet from "@/public/graphics/images/fleet.webp";
-import falcon7x from "@/public/graphics/images/Falcon-7X-JetHouse.webp";
 import Image from "next/image";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useInView } from "framer-motion";
-import Link from "next/link";
+import EmblaCarousel from "@/components/EmblaCarousel";
+import IJet from "@/types/jet";
+import axios from "axios";
 
 const Fleet = () => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true });
+  const ref = useRef(null),
+    isInView = useInView(ref, { once: true }),
+    [data, setData] = useState<IJet[] | null>(null);
+
+  useEffect(() => {
+    const fetchFleet = async () => {
+      const res = await axios.get("https://jethouse-admin.vercel.app/api/jet", {
+        headers: {
+          "content-type": "application/json",
+        },
+        params: {
+          "select[images][listing]": true,
+        },
+      });
+
+      setData(res.data.docs);
+    };
+
+    fetchFleet();
+  }, []);
 
   return (
     <section
@@ -21,6 +41,7 @@ const Fleet = () => {
         alt={"Photo from plane cabin looking towards the sunset"}
         className={`w-2/3 h-[85vh] left-0 object-cover absolute overflow-y-clip -z-10 ${isInView ? "opacity-100" : "opacity-0"} transition-opacity duration-1000 ease-in-out`}
       />
+
       <div
         className={`flex h-[60vh] max-lg:w-[70vw] px-[4vw] w-[38vw] bg-white flex-col justify-center items-start gap-[2vh] ${isInView ? "opacity-100" : "opacity-0"} transition-opacity duration-1000 delay-200 ease-in-out`}
       >
@@ -31,13 +52,14 @@ const Fleet = () => {
           aircraft to ensure a continuous high standard of service for all
           clients, whether aircraft owners or charter clients.
         </p>
-        <Link href={"/fleet"} ref={ref}>
-          <Image
-            src={falcon7x}
-            alt={"Falcon 7X"}
-            className={"cursor-pointer"}
-          />
-        </Link>
+        <div
+          ref={ref}
+          className={
+            "flex flex-col justify-center items-center gap-[2vh] w-full overflow-x-clip"
+          }
+        >
+          {data && <EmblaCarousel slides={data} options={{ loop: true }} />}
+        </div>
       </div>
     </section>
   );

@@ -104,23 +104,34 @@ export interface Jet {
   description?: string | null;
   brochure?: (number | null) | Media;
   information: {
-    'cabin size (m)': {
+    cabin: {
       length: number;
       width: number;
       height: number;
     };
-    'maximum speed (km/h)': number;
-    'flight hours': number;
+    speed: number;
+    hours: number;
     crew: {
       pilots: number;
-      'flight attendants': number;
+      attendants: number;
     };
-    'maximum range (km)': number;
-    'baggage capacity (m³)': number;
+    range: number;
+    baggage: number;
+    wifi?: boolean | null;
   };
   images: {
-    'hero banner': number | Media;
-    'cabin layout': number | Media;
+    listing: number | Media;
+    hero: number | Media;
+    cabin: {
+      day: {
+        seats: number;
+        image: number | Media;
+      };
+      night: {
+        beds: number;
+        image: number | Media;
+      };
+    };
     gallery: {
       image: number | Media;
       id?: string | null;
@@ -234,29 +245,46 @@ export interface JetSelect<T extends boolean = true> {
   information?:
     | T
     | {
-        'cabin size (m)'?:
+        cabin?:
           | T
           | {
               length?: T;
               width?: T;
               height?: T;
             };
-        'maximum speed (km/h)'?: T;
-        'flight hours'?: T;
+        speed?: T;
+        hours?: T;
         crew?:
           | T
           | {
               pilots?: T;
-              'flight attendants'?: T;
+              attendants?: T;
             };
-        'maximum range (km)'?: T;
-        'baggage capacity (m³)'?: T;
+        range?: T;
+        baggage?: T;
+        wifi?: T;
       };
   images?:
     | T
     | {
-        'hero banner'?: T;
-        'cabin layout'?: T;
+        listing?: T;
+        hero?: T;
+        cabin?:
+          | T
+          | {
+              day?:
+                | T
+                | {
+                    seats?: T;
+                    image?: T;
+                  };
+              night?:
+                | T
+                | {
+                    beds?: T;
+                    image?: T;
+                  };
+            };
         gallery?:
           | T
           | {

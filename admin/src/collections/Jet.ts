@@ -21,7 +21,8 @@ export const Jet: CollectionConfig = {
           type: 'group',
           fields: [
             {
-              name: 'cabin size (m)',
+              name: 'cabin',
+              label: 'Cabin size (m)',
               type: 'group',
               fields: [
                 { name: 'length', type: 'number', required: true },
@@ -30,12 +31,14 @@ export const Jet: CollectionConfig = {
               ],
             },
             {
-              name: 'maximum speed (km/h)',
+              name: 'speed',
+              label: 'Maximum speed (km/h)',
               type: 'number',
               required: true,
             },
             {
-              name: 'flight hours',
+              name: 'hours',
+              label: 'Flight hours',
               type: 'number',
               required: true,
             },
@@ -44,19 +47,55 @@ export const Jet: CollectionConfig = {
               type: 'group',
               fields: [
                 { name: 'pilots', type: 'number', required: true },
-                { name: 'flight attendants', type: 'number', required: true },
+                { name: 'attendants', label: 'Flight attendants', type: 'number', required: true },
               ],
             },
-            { name: 'maximum range (km)', type: 'number', required: true },
-            { name: 'baggage capacity (m³)', type: 'number', required: true },
+            { name: 'range', label: 'Maximum range (km)', type: 'number', required: true },
+            { name: 'baggage', label: 'Baggage capacity (m³)', type: 'number', required: true },
+            { name: 'wifi', type: 'checkbox', required: false },
           ],
         },
         {
           name: 'images',
           type: 'group',
           fields: [
-            { name: 'hero banner', type: 'upload', relationTo: 'media', required: true },
-            { name: 'cabin layout', type: 'upload', relationTo: 'media', required: true },
+            {
+              name: 'listing',
+              label: 'Listing image',
+              type: 'upload',
+              relationTo: 'media',
+              required: true,
+            },
+            {
+              name: 'hero',
+              label: 'Hero banner',
+              type: 'upload',
+              relationTo: 'media',
+              required: true,
+            },
+            {
+              name: 'cabin',
+              label: 'Cabin layout',
+              type: 'group',
+              fields: [
+                {
+                  name: 'day',
+                  type: 'group',
+                  fields: [
+                    { name: 'seats', type: 'number', required: true },
+                    { name: 'image', type: 'upload', relationTo: 'media', required: true },
+                  ],
+                },
+                {
+                  name: 'night',
+                  type: 'group',
+                  fields: [
+                    { name: 'beds', type: 'number', required: true },
+                    { name: 'image', type: 'upload', relationTo: 'media', required: true },
+                  ],
+                },
+              ],
+            },
             {
               name: 'gallery',
               labels: {

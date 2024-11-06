@@ -9,14 +9,15 @@ import AutoScroll from "embla-carousel-auto-scroll";
 import axios from "axios";
 
 const Strip = () => {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [
-    AutoScroll({
-      playOnInit: true,
-      loop: true,
-      speed: 1,
-      align: "start",
-    }),
-  ]);
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    { loop: true, align: "start" },
+    [
+      AutoScroll({
+        playOnInit: true,
+        speed: 1,
+      }),
+    ],
+  );
   const cities = [
     "Paris",
     "Brussels",
@@ -38,7 +39,6 @@ const Strip = () => {
           axios.get(`${baseUrl}?q=${city}&appid=${apiKey}&units=metric`),
         ),
       );
-      console.log(responses);
       //@ts-ignore
       return responses.map(
         (res) => `${res.data.name} ${Math.round(res.data.main.temp)}°C`,

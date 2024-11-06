@@ -1,17 +1,15 @@
 import { useCallback } from "react";
 import { EmblaOptionsType } from "embla-carousel";
-import {
-  DotButton,
-  useDotButton,
-} from "@/components/fleet/EmblaCarouselDotButton";
+import { DotButton, useDotButton } from "@/components/EmblaCarouselDotButton";
 import useEmblaCarousel from "embla-carousel-react";
 import Image from "next/image";
 import Autoplay from "embla-carousel-autoplay";
 import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures";
 import IJet from "@/types/jet";
+import Link from "next/link";
 
 type PropType = {
-  slides: IJet["images"]["gallery"];
+  slides: IJet[];
   options?: EmblaOptionsType;
 };
 
@@ -67,19 +65,23 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
         >
           <div className="flex justify-start items-center">
             {slides.map((data, i) => (
-              <div className="embla__slide h-[28vh] md:h-[32vh]" key={i}>
+              <Link
+                href={`/fleet?id=${data.id}`}
+                className="embla__slide h-auto w-full cursor-pointer"
+                key={i}
+              >
                 <Image
                   src={encodeURI(
-                    `https://jethouse-admin.vercel.app${data.image.url}`,
+                    `https://jethouse-admin.vercel.app${data.images.listing.url}`,
                   )}
-                  alt={data.image.alt}
-                  width={data.image.width}
-                  height={data.image.height}
+                  alt={data.images.listing.alt}
+                  width={data.images.listing.width}
+                  height={data.images.listing.height}
                   className={
-                    "w-full md:w-[48vw] lg:w-[28vw] h-full object-cover object-center"
+                    "w-full h-full object-cover object-center hover:scale-110 transition-transform duration-200 ease-in-out"
                   }
                 />
-              </div>
+              </Link>
             ))}
           </div>
         </div>

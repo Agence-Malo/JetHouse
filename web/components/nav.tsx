@@ -6,9 +6,10 @@ import logo from "@/public/graphics/images/logo-white.png";
 import { FullLogo } from "@/public/graphics/images/logo";
 import Image from "next/image";
 import Link from "next/link";
-import { Tooltip } from "@nextui-org/react";
+import { Accordion, AccordionItem, Tooltip } from "@nextui-org/react";
 import { motion } from "framer-motion";
 import { usePathname } from "next/navigation";
+import IJet from "@/types/jet";
 
 export const Close = () => {
   const { openView } = useView();
@@ -35,70 +36,33 @@ export const Social = () => {
     <div
       className={"flex flex-col justify-center items-start w-full gap-[2vh]"}
     >
-      <Tooltip
-        content={
-          <div className={"flex justify-center items-center"}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              x="0px"
-              y="0px"
-              viewBox="0 0 72 72"
-              className={"h-[1.25rem] w-auto -ml-[0.25rem]"}
-            >
-              <path d="M29.015 53.843l25.861-31.394C55.592 24.505 56 26.703 56 29c0 6.678-2.505 10.698-4.936 13.967-.868 1.167-1.774 2.28-2.733 3.457-3.245 3.984-7.331 9.044-8.328 15.535C39.831 63.075 38.611 65 36 65s-3.854-1.874-3.989-2.995C31.667 59.144 30.495 56.384 29.015 53.843zM37.833 36.749L26.68 50.289c-.993-1.368-2.007-2.639-2.935-3.779-.959-1.177-1.865-2.29-2.733-3.457-.525-.706-1.056-1.455-1.568-2.257l9.616-11.674C29.025 29.41 29 29.702 29 30c0 3.866 3.134 7 7 7C36.635 37 37.248 36.908 37.833 36.749zM33.813 23.353L44.18 10.768c3.621 1.631 6.664 4.307 8.758 7.645l-9.963 12.095C42.987 30.34 43 30.172 43 30c0-3.866-3.134-7-7-7C35.236 23 34.502 23.127 33.813 23.353zM27.26 24.92l-9.838 11.943C16.57 34.686 16 32.128 16 29c0-3.958 1.17-7.641 3.162-10.75L27.26 24.92zM29.842 21.785l-8.159-6.721C25.319 11.33 30.389 9 36 9c1.382 0 2.732.141 4.036.41L29.842 21.785z"></path>
-            </svg>
-            <label>View on Google Maps</label>
-          </div>
-        }
-        showArrow={true}
+      <a href={"https://maps.app.goo.gl/hnU6GhHkb2Lz5wmt8"} target={"_blank"}>
+        <label className={"normal-case"}>
+          <span className={"font-bold uppercase"}>Headquarter</span>
+          <br />
+          Avenue 77 Business Centre,
+          <br />
+          Triq in-Negozju,
+          <br />
+          Birkirkara CBD 3010,
+          <br />
+          Malta
+        </label>
+      </a>
+      <a
+        href={"https://www.linkedin.com/company/jethouse-ltd/"}
+        target={"_blank"}
       >
-        <a href={"https://maps.app.goo.gl/hnU6GhHkb2Lz5wmt8"} target={"_blank"}>
-          <label className={"normal-case"}>
-            <span className={"font-bold uppercase"}>Headquarter</span>
-            <br />
-            Avenue 77 Business Centre,
-            <br />
-            Triq in-Negozju,
-            <br />
-            Birkirkara CBD 3010,
-            <br />
-            Malta
-          </label>
-        </a>
-      </Tooltip>
-      <Tooltip
-        placement={"top-start"}
-        content={
-          <div className={"flex justify-center items-center"}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              x="0px"
-              y="0px"
-              viewBox="0 0 72 72"
-              className={"h-[1.25rem] w-auto -ml-[0.25rem]"}
-            >
-              <path d="M 43 12 C 40.791 12 39 13.791 39 16 C 39 18.209 40.791 20 43 20 L 46.34375 20 L 35.171875 31.171875 C 33.609875 32.733875 33.609875 35.266125 35.171875 36.828125 C 35.951875 37.608125 36.977 38 38 38 C 39.023 38 40.048125 37.608125 40.828125 36.828125 L 52 25.65625 L 52 29 C 52 31.209 53.791 33 56 33 C 58.209 33 60 31.209 60 29 L 60 16 C 60 13.791 58.209 12 56 12 L 43 12 z M 23 14 C 18.037 14 14 18.038 14 23 L 14 49 C 14 53.962 18.037 58 23 58 L 49 58 C 53.963 58 58 53.962 58 49 L 58 41 C 58 38.791 56.209 37 54 37 C 51.791 37 50 38.791 50 41 L 50 49 C 50 49.551 49.552 50 49 50 L 23 50 C 22.448 50 22 49.551 22 49 L 22 23 C 22 22.449 22.448 22 23 22 L 31 22 C 33.209 22 35 20.209 35 18 C 35 15.791 33.209 14 31 14 L 23 14 z"></path>
-            </svg>
-            <label>Visit LinkedIn</label>
-          </div>
-        }
-        showArrow={true}
-      >
-        <a
-          href={"https://www.linkedin.com/company/jethouse-ltd/"}
-          target={"_blank"}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          x="0px"
+          y="0px"
+          viewBox="0 0 64 64"
+          className={"size-[6vh] fill-white m-[-1vh]"}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            x="0px"
-            y="0px"
-            viewBox="0 0 64 64"
-            className={"size-[6vh] fill-white m-[-1vh]"}
-          >
-            <path d="M40.227,12C51.145,12,52,12.854,52,23.773v16.453C52,51.145,51.145,52,40.227,52H23.773C12.855,52,12,51.145,12,40.227	V23.773C12,12.854,12.855,12,23.773,12H40.227z M25.029,43V26.728h-5.057V43H25.029z M22.501,24.401	c1.625,0,2.947-1.322,2.947-2.949c0-1.625-1.322-2.947-2.947-2.947c-1.629,0-2.949,1.32-2.949,2.947S20.87,24.401,22.501,24.401z M44,43v-8.925c0-4.382-0.946-7.752-6.067-7.752c-2.46,0-4.109,1.349-4.785,2.628H33.08v-2.223h-4.851V43h5.054v-8.05	c0-2.122,0.405-4.178,3.036-4.178c2.594,0,2.628,2.427,2.628,4.315V43H44z"></path>
-          </svg>
-        </a>
-      </Tooltip>
+          <path d="M40.227,12C51.145,12,52,12.854,52,23.773v16.453C52,51.145,51.145,52,40.227,52H23.773C12.855,52,12,51.145,12,40.227	V23.773C12,12.854,12.855,12,23.773,12H40.227z M25.029,43V26.728h-5.057V43H25.029z M22.501,24.401	c1.625,0,2.947-1.322,2.947-2.949c0-1.625-1.322-2.947-2.947-2.947c-1.629,0-2.949,1.32-2.949,2.947S20.87,24.401,22.501,24.401z M44,43v-8.925c0-4.382-0.946-7.752-6.067-7.752c-2.46,0-4.109,1.349-4.785,2.628H33.08v-2.223h-4.851V43h5.054v-8.05	c0-2.122,0.405-4.178,3.036-4.178c2.594,0,2.628,2.427,2.628,4.315V43H44z"></path>
+        </svg>
+      </a>
     </div>
   );
 };
@@ -136,7 +100,7 @@ export const Connect = () => {
   );
 };
 
-const Nav = () => {
+const Nav = ({ fleet }: { fleet: null | Pick<IJet, "id" | "name">[] }) => {
   const path = usePathname(),
     { openView } = useView();
 
@@ -164,13 +128,29 @@ const Nav = () => {
           >
             Home
           </Link>
-          <Link
-            href={"/fleet"}
-            onClick={() => openView(null)}
-            className={`${path === "/fleet" && "font-bold"} hover:font-bold [transition:_font-weight_0.2s_ease-in-out]`}
-          >
-            Our Fleet
-          </Link>
+          {fleet && (
+            <Accordion
+              onClick={() => openView(null)}
+              hideIndicator={true}
+              itemClasses={{
+                base: "w-max",
+                content: "flex flex-col justify-start items-start gap-4 mt-2",
+                title: `${path === "/fleet" ? "font-bold" : "font-light"} hover:font-bold [transition:_font-weight_0.2s_ease-in-out] text-5xl text-white -my-4`,
+              }}
+            >
+              <AccordionItem title={"Our Fleet"} className={"-mx-2"}>
+                {fleet.map((jet) => (
+                  <Link
+                    href={`/fleet?id=${jet.id}`}
+                    key={jet.id}
+                    className={"text-2xl ml-[2vw]"}
+                  >
+                    {jet.name}
+                  </Link>
+                ))}
+              </AccordionItem>
+            </Accordion>
+          )}
           <Link
             href={"/about"}
             onClick={() => openView(null)}

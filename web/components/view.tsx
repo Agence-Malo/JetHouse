@@ -2,13 +2,33 @@
 
 import { useView } from "@/context/view";
 import { AnimatePresence, motion } from "framer-motion";
-import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import IJet from "@/types/jet";
 
-const Nav = dynamic(() => import("@/components/nav"));
-const Contact = dynamic(() => import("@/components/contact"));
+import Nav from "@/components/nav";
+import Contact from "@/components/contact";
 
 const View = () => {
-  const { view, openView } = useView();
+  const { view, openView } = useView(),
+    [fleet, setFleet] = useState<null | Pick<IJet, "id" | "name">[]>(null);
+
+  useEffect(() => {
+    const fetchFleet = async () => {
+      const res = await axios.get("https://jethouse-admin.vercel.app/api/jet", {
+        headers: {
+          "content-type": "application/json",
+        },
+        params: {
+          "select[name]": true,
+        },
+      });
+
+      setFleet(res.data.docs);
+    };
+
+    fetchFleet();
+  }, []);
 
   return (
     <AnimatePresence mode={"popLayout"}>
@@ -34,7 +54,7 @@ const View = () => {
           onClick={() => openView(null)}
         />
       )}
-      {view === "nav" && <Nav key={"navigation"} />}
+      {view === "nav" && <Nav key={"navigation"} fleet={fleet} />}
       {view === "contact" && <Contact key={"contact"} />}
     </AnimatePresence>
   );
