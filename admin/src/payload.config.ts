@@ -14,7 +14,7 @@ const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 export default buildConfig({
-  cors: ['https://jethouse.aero'],
+  cors: ['https://jethouse.aero', 'https://www.jethouse.aero'],
   routes: {
     admin: '/',
     api: '/api',
