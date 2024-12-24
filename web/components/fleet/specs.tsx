@@ -1,11 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import day from "@/public/graphics/images/fleet/Cabin Layout.webp";
-import night from "@/public/graphics/images/fleet/Cabin Layout 2.webp";
 import { useJet } from "@/context/jet";
-import { useEffect, useState } from "react";
-import IJet from "@/types/jet";
+import type { JSX } from "react";
 
 const Spec = ({
   icon,
@@ -135,9 +132,7 @@ const Specs = () => {
       </div>
       {data.brochure && (
         <a
-          href={encodeURI(
-            `https://jethouse-admin.vercel.app${data.brochure.url}`,
-          )}
+          href={`${process.env.NEXT_PUBLIC_PAYLOAD_URL}${data.brochure.url}`}
           target={"_blank"}
           className={"glass-button glass-button-dark z-0 my-[8vh]"}
         >
@@ -271,9 +266,7 @@ const Specs = () => {
             </label>
             <p>Day: {data.images.cabin.day.seats} seats</p>
             <Image
-              src={encodeURI(
-                `https://jethouse-admin.vercel.app${data.images.cabin.day.image.url}`,
-              )}
+              src={`${process.env.NEXT_PUBLIC_PAYLOAD_URL}${data.images.cabin.day.image.url}`}
               width={data.images.cabin.day.image.width}
               height={data.images.cabin.day.image.height}
               className={"w-full h-auto"}
@@ -281,9 +274,7 @@ const Specs = () => {
             />
             <p>Night: {data.images.cabin.night.beds} beds</p>
             <Image
-              src={encodeURI(
-                `https://jethouse-admin.vercel.app${data.images.cabin.night.image.url}`,
-              )}
+              src={`${process.env.NEXT_PUBLIC_PAYLOAD_URL}${data.images.cabin.night.image.url}`}
               width={data.images.cabin.night.image.width}
               height={data.images.cabin.night.image.height}
               className={"w-full h-auto"}

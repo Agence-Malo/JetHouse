@@ -15,14 +15,17 @@ const View = () => {
 
   useEffect(() => {
     const fetchFleet = async () => {
-      const res = await axios.get("https://jethouse-admin.vercel.app/api/jet", {
-        headers: {
-          "content-type": "application/json",
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/jet`,
+        {
+          headers: {
+            "content-type": "application/json",
+          },
+          params: {
+            "select[name]": true,
+          },
         },
-        params: {
-          "select[name]": true,
-        },
-      });
+      );
 
       setFleet(res.data.docs);
     };

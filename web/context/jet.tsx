@@ -15,7 +15,7 @@ export const JetProvider = ({ children }: { children: React.ReactNode }) => {
 
     const fetchJet = async () => {
       const res = await axios.get(
-        `https://jethouse-admin.vercel.app/api/jet/${id}`,
+        `${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/jet/${id}`,
         {
           headers: {
             "content-type": "application/json",

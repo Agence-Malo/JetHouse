@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
 import { Fira_Sans } from "next/font/google";
 import "./globals.css";
@@ -27,11 +26,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={"scroll-smooth"}>
-      <SpeedInsights />
-      <Analytics />
       <UIProvider>
         <ViewProvider>
           <body className={fira.className}>{children}</body>
+          <Analytics />
         </ViewProvider>
       </UIProvider>
     </html>

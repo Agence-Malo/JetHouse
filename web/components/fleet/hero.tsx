@@ -11,7 +11,7 @@ const Hero = () => {
         "w-full flex justify-center items-center bg-cover bg-center h-[56vh]"
       }
       style={{
-        backgroundImage: `url(${encodeURI(`https://jethouse-admin.vercel.app${data.images.hero.url}`)})`,
+        backgroundImage: `url(${encodeURI(`${process.env.NEXT_PUBLIC_PAYLOAD_URL}${data.images.hero.url}`)})`,
       }}
     >
       <div

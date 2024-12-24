@@ -70,7 +70,7 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
               <div className="embla__slide h-[28vh] md:h-[32vh]" key={i}>
                 <Image
                   src={encodeURI(
-                    `https://jethouse-admin.vercel.app${data.image.url}`,
+                    `${process.env.NEXT_PUBLIC_PAYLOAD_URL}${data.image.url}`,
                   )}
                   alt={data.image.alt}
                   width={data.image.width}

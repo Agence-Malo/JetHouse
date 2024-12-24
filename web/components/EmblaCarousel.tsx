@@ -71,9 +71,7 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
                 key={i}
               >
                 <Image
-                  src={encodeURI(
-                    `https://jethouse-admin.vercel.app${data.images.listing.url}`,
-                  )}
+                  src={`${process.env.NEXT_PUBLIC_PAYLOAD_URL}${data.images.listing.url}`}
                   alt={data.images.listing.alt}
                   width={data.images.listing.width}
                   height={data.images.listing.height}
