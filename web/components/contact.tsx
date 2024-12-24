@@ -15,11 +15,15 @@ import {
 import { Close, Connect, Social } from "@/components/nav";
 import codes from "@/data/CountryCodes.json";
 import { useFormStatus } from "react-dom";
-import Lottie from "lottie-react";
 import { replaceColor } from "lottie-colorify";
 import sentAnimation from "@/public/graphics/animations/sent.json";
 import { motion } from "framer-motion";
 import emailjs from "@emailjs/browser";
+import dynamic from "next/dynamic";
+
+const Lottie = dynamic(() => import("lottie-react"), {
+  ssr: false,
+});
 
 const Contact = () => {
   const [sent, send] = useState<boolean>(false),

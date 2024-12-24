@@ -1,17 +1,20 @@
 "use client";
 
 import React, { useRef, useState } from "react";
-import Lottie, { LottieRefCurrentProps } from "lottie-react";
+import { LottieRefCurrentProps } from "lottie-react";
 import { flatten } from "lottie-colorify";
 import arrow from "@/public/graphics/images/services/arrow.json";
 import management from "@/public/graphics/images/services/management.webp";
 import charter from "@/public/graphics/images/services/charter.webp";
 import consulting from "@/public/graphics/images/services/consulting.webp";
-import Image, { StaticImageData } from "next/image";
+import { StaticImageData } from "next/image";
 import { AnimatePresence, useInView } from "framer-motion";
 import { motion } from "framer-motion";
 import useEmblaCarousel from "embla-carousel-react";
 import AutoScroll from "embla-carousel-auto-scroll";
+import dynamic from "next/dynamic";
+
+const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 
 const Banner = ({
   heading,
