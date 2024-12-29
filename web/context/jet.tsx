@@ -15,7 +15,7 @@ export const JetProvider = ({ children }: { children: React.ReactNode }) => {
 
     const fetchJet = async () => {
       const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/jet/${id}`,
+        `${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/jets/${id}`,
         {
           headers: {
             "content-type": "application/json",

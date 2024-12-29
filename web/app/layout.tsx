@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import { Analytics } from "@vercel/analytics/react";
 import { Fira_Sans } from "next/font/google";
 import "./globals.css";
 import { ViewProvider } from "@/context/view";
@@ -29,7 +28,6 @@ export default function RootLayout({
       <UIProvider>
         <ViewProvider>
           <body className={fira.className}>{children}</body>
-          <Analytics />
         </ViewProvider>
       </UIProvider>
     </html>

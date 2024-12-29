@@ -16,17 +16,17 @@ const Fleet = () => {
   useEffect(() => {
     const fetchFleet = async () => {
       const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/jet`,
+        `${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/jets`,
         {
           headers: {
             "content-type": "application/json",
           },
           params: {
+            "select[id]": true,
             "select[images][listing]": true,
           },
         },
       );
-
       setData(res.data.docs);
     };
 

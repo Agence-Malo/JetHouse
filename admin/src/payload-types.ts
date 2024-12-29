@@ -13,7 +13,7 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
-    jet: Jet;
+    jets: Jet;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -22,7 +22,7 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
-    jet: JetSelect<false> | JetSelect<true>;
+    jets: JetsSelect<false> | JetsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -97,10 +97,10 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "jet".
+ * via the `definition` "jets".
  */
 export interface Jet {
-  id: number;
+  id: string;
   name: string;
   description?: string | null;
   brochure?: (number | null) | Media;
@@ -157,8 +157,8 @@ export interface PayloadLockedDocument {
         value: number | Media;
       } | null)
     | ({
-        relationTo: 'jet';
-        value: number | Jet;
+        relationTo: 'jets';
+        value: string | Jet;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -237,9 +237,10 @@ export interface MediaSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "jet_select".
+ * via the `definition` "jets_select".
  */
-export interface JetSelect<T extends boolean = true> {
+export interface JetsSelect<T extends boolean = true> {
+  id?: T;
   name?: T;
   description?: T;
   brochure?: T;

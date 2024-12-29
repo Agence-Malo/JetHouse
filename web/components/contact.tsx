@@ -1,16 +1,16 @@
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
-  Input,
-  Textarea,
-  Checkbox,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Link,
-  useDisclosure,
   Button,
+  Checkbox,
+  Input,
+  Link,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  Textarea,
+  useDisclosure,
 } from "@nextui-org/react";
 import { Close, Connect, Social } from "@/components/nav";
 import codes from "@/data/CountryCodes.json";
@@ -18,8 +18,8 @@ import { useFormStatus } from "react-dom";
 import { replaceColor } from "lottie-colorify";
 import sentAnimation from "@/public/graphics/animations/sent.json";
 import { motion } from "framer-motion";
-import emailjs from "@emailjs/browser";
 import dynamic from "next/dynamic";
+import axios from "axios";
 
 const Lottie = dynamic(() => import("lottie-react"), {
   ssr: false,
@@ -34,7 +34,20 @@ const Contact = () => {
     [privacy, setPrivacy] = useState(false),
     [terms, setTerms] = useState(false),
     { onClose, onOpenChange } = useDisclosure(),
-    form = useRef<HTMLFormElement>(null);
+    form = useRef<HTMLFormElement>(null),
+    [formData, setFormData] = useState<{
+      name: string;
+      email: string;
+      tel: string;
+      message: string;
+      submit: boolean;
+    }>({
+      name: "",
+      email: "",
+      tel: "",
+      message: "",
+      submit: false,
+    });
 
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
@@ -56,38 +69,43 @@ const Contact = () => {
     return () => window.removeEventListener("keypress", handleKeyPress);
   }, [changeCode]);
 
+  useEffect(() => {
+    if (formData.submit) {
+      const submit = async () =>
+        await axios.post(
+          `${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/email`,
+          {},
+          {
+            params: {
+              name: formData.name,
+              email: formData.email,
+              tel: formData.tel
+                ? code + formData.tel
+                : "Phone number not provided",
+              message: formData.message,
+            },
+          },
+        );
+      submit();
+      send(true);
+    }
+  }, [formData.submit]);
+
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     switch (e.target.name) {
       case "name":
         e.target.value = e.target.value.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ\s]/g, "");
+        setFormData({ ...formData, name: e.target.value });
         break;
       case "email":
         e.target.value = e.target.value.replace(/[^a-z0-9@._-]/g, "");
+        setFormData({ ...formData, email: e.target.value });
         break;
       case "tel":
         e.target.value = e.target.value.replace(/[^0-9]/g, "");
+        setFormData({ ...formData, tel: e.target.value });
         break;
     }
-  };
-
-  const sendEmail = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    emailjs
-      .sendForm(
-        process.env.NEXT_PUBLIC_SERVICE_ID!,
-        process.env.NEXT_PUBLIC_TEMPLATE_ID!,
-        form.current!,
-        { publicKey: process.env.NEXT_PUBLIC_KEY },
-      )
-      .then(
-        () => {
-          send(true);
-        },
-        (error) => {
-          console.log("FAILED...", error.text);
-        },
-      );
   };
 
   return (
@@ -168,12 +186,10 @@ const Contact = () => {
         ) : (
           <form
             ref={form}
-            onSubmit={(e) => sendEmail}
-            /*action={async (formData) =>
-              await submit({ formData: formData, dialCode: code }).then(() =>
-                send(true),
-              )
-            }*/
+            onSubmit={(e) => {
+              e.preventDefault();
+              setFormData({ ...formData, submit: true });
+            }}
             className={
               "w-full h-full md:w-[56vh] flex flex-col justify-between items-start containerize md:px-[2vw] bg-white gap-[2vh] md:gap-[4vh] py-[2vh] md:py-[4vh]"
             }
@@ -181,7 +197,7 @@ const Contact = () => {
             <Input
               label={"Name"}
               type={"text"}
-              name={"from_name"}
+              name={"name"}
               isDisabled={pending}
               isRequired={true}
               variant={"underlined"}
@@ -307,6 +323,9 @@ const Contact = () => {
               isRequired={true}
               variant={"underlined"}
               maxRows={3}
+              onChange={(e) =>
+                setFormData({ ...formData, message: e.target.value })
+              }
               classNames={{
                 inputWrapper: [
                   "w-full",
@@ -325,7 +344,7 @@ const Contact = () => {
               classNames={{
                 base: "w-full flex justify-start items-baseline",
                 label: "text-sm",
-              }} /* A link for the privacy policy and ... must be added */
+              }}
             >
               I agree to the{" "}
               <Link
@@ -417,7 +436,6 @@ const Contact = () => {
               </Modal>
             </Checkbox>
             <Button
-              isDisabled={pending}
               type={"submit"}
               className={
                 "w-full rounded-none bg-black text-white hover:bg-blue-950 py-[3vh]"
