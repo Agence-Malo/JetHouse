@@ -6,7 +6,7 @@ import logo from "@/public/graphics/images/logo-white.png";
 import { FullLogo } from "@/public/graphics/images/logo";
 import Image from "next/image";
 import Link from "next/link";
-import { Accordion, AccordionItem, Tooltip } from "@nextui-org/react";
+import { Accordion, AccordionItem } from "@nextui-org/react";
 import { motion } from "framer-motion";
 import { usePathname } from "next/navigation";
 import IJet from "@/types/jet";
