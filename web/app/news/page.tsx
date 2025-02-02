@@ -16,10 +16,10 @@ export const metadata: Metadata = {
 export default function NewsPage() {
     return (
         <main className="w-full flex flex-col justify-start items-center">
-            <Navbar invert={0} />
+            <Navbar invert={-20}/>
             <View />
 
-            <h1 className="text-center text-blue-950 font-medium text-2xl md:text-3xl mt-[12vh] mb-4">
+            <h1 className="text-center text-blue-950 font-medium text-2xl md:text-3xl mt-[18vh] mb-4">
                 Latest News
             </h1>
 

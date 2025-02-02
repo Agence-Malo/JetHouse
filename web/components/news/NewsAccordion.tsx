@@ -40,7 +40,6 @@ const yearsData = [
 ];
 
 const NewsAccordion = () => {
-    // Початково всі секції закриті
     const [expandedKeys, setExpandedKeys] = useState<Selection>(new Set());
 
     const onChange = (keys: Selection) => {
@@ -62,7 +61,7 @@ const NewsAccordion = () => {
                             key={keyStr}
                             aria-label={`Year ${item.year}`}
                             className="text-blue-950"
-                            indicator={({ isOpen }) => <ChevronIcon/>}
+                            indicator={({}) => <ChevronIcon/>}
                             title={
                                 <h4 className="font-medium text-blue-950 normal-case">
                                     {item.year}
