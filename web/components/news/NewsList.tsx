@@ -1,9 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import NewsCard from "./NewsCard";
-import plane from "../../public/Images/About us/Hangar.png"
+import plane from "../../public/Images/About us/Hangar.png";
 
-const mockNews = [
+const initialNews = [
     {
         imageSrc: plane.src,
         category: "CATÉGORIE",
@@ -23,9 +24,15 @@ const mockNews = [
 ];
 
 const NewsList = () => {
+    const [news, setNews] = useState(initialNews);
+
+    const loadMoreNews = () => {
+        setNews((prevNews) => [...prevNews, ...initialNews]);
+    };
+
     return (
         <section className="w-full flex flex-col gap-8">
-            {mockNews.map((item, index) => (
+            {news.map((item, index) => (
                 <NewsCard
                     key={index}
                     imageSrc={item.imageSrc}
@@ -36,7 +43,10 @@ const NewsList = () => {
                 />
             ))}
             <div className="flex justify-center">
-                <button className="border border-blue-950 text-blue-950 hover:bg-blue-950 hover:text-white transition-colors duration-200 ease-in-out px-6 py-2 text-sm uppercase font-light">
+                <button
+                    onClick={loadMoreNews}
+                    className="border border-blue-950 text-blue-950 hover:bg-blue-950 hover:text-white transition-colors duration-200 ease-in-out px-6 py-2 text-sm uppercase font-light"
+                >
                     View More
                 </button>
             </div>
