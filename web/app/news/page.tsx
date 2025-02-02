@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 export default function NewsPage() {
     return (
         <main className="w-full flex flex-col justify-start items-center">
-            <Navbar invert={-20}/>
+            <Navbar invert={-20} />
             <View />
 
             <h1 className="text-center text-blue-950 font-medium text-2xl md:text-3xl mt-[18vh] mb-4">
@@ -27,11 +27,11 @@ export default function NewsPage() {
 
             <NewsHero />
 
-            <section className="containerize flex flex-col-reverse lg:flex-row justify-between items-start gap-8 py-8">
+            <section className="containerize flex flex-col-reverse lg:flex-row items-stretch justify-between gap-8 py-8">
                 <div className="w-full lg:w-[55%] flex flex-col gap-8">
                     <NewsList />
                 </div>
-                <div className="w-full lg:w-[30%]">
+                <div className="w-full lg:w-[30%] border-l border-blue-950 pl-4">
                     <NewsAccordion />
                 </div>
             </section>

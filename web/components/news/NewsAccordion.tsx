@@ -8,8 +8,7 @@ const ChevronIcon = () => (
     <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
-        className={`w-[1.75rem] h-[1.75rem] fill-blue-950 transition-transform duration-200"
-        }`}
+        className="w-[1.75rem] h-[1.75rem] fill-blue-950 transition-transform duration-200"
     >
         <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z" />
     </svg>
@@ -50,7 +49,6 @@ const NewsAccordion = () => {
         <aside className="flex flex-col gap-4">
             <Accordion
                 variant="light"
-                className="border-l border-blue-950 pl-4"
                 selectedKeys={expandedKeys}
                 onSelectionChange={onChange}
             >
@@ -61,9 +59,9 @@ const NewsAccordion = () => {
                             key={keyStr}
                             aria-label={`Year ${item.year}`}
                             className="text-blue-950"
-                            indicator={({}) => <ChevronIcon/>}
+                            indicator={() => <ChevronIcon />}
                             title={
-                                <h4 className="font-medium text-blue-950 normal-case">
+                                <h4 className="font-normal text-blue-950 normal-case">
                                     {item.year}
                                 </h4>
                             }
