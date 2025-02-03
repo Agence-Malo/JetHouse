@@ -216,17 +216,22 @@ export const Navbar = ({ invert }: { invert: number }) => {
         { openView } = useView();
 
     useEffect(() => {
-        const handleScroll = () => {
+        function handleScroll() {
+            if (invert < 0) {
+                scroll(true);
+                return;
+            }
+
             const position = window.scrollY;
-            const threshold = invert;
-            if (position > threshold) scroll(true);
-            else if (position <= threshold) scroll(false);
-        };
+            if (position > invert) scroll(true);
+            else scroll(false);
+        }
+
+        handleScroll();
 
         window.addEventListener("scroll", handleScroll);
-
         return () => window.removeEventListener("scroll", handleScroll);
-    }, [scrolled]);
+    }, [invert]);
 
     return (
         <>
