@@ -2,54 +2,40 @@
 
 import { useState } from "react";
 import NewsCard from "./NewsCard";
-import plane from "../../public/Images/About us/Hangar.png";
-
-const initialNews = [
-    {
-        imageSrc: plane.src,
-        category: "CATÉGORIE",
-        title: "JetHouse will be expanding its fleet with the addition of a Challenger 605",
-        description:
-            "A year ago, JetHouse was just an idea. But behind the idea, there was already a team of passionate aviation experts, united by a clear vision: to offer a unique and personalized approach to private aircraft management.",
-        articleLink: "/article/challenger-605",
-    },
-    {
-        imageSrc: plane.src,
-        category: "CATÉGORIE",
-        title: "JetHouse was officially awarded its Air Operator Certificate (AOC)",
-        description:
-            "On Tuesday, February 27th, JetHouse was officially awarded its Air Operator Certificate by Transport Malta...",
-        articleLink: "/article/aoc",
-    },
-];
+import { newsData } from "@/data/newsData";
 
 const NewsList = () => {
-    const [news, setNews] = useState(initialNews);
+    const [visibleCount, setVisibleCount] = useState(2);
 
     const loadMoreNews = () => {
-        setNews((prevNews) => [...prevNews, ...initialNews]);
+        setVisibleCount((prev) => prev + 2);
     };
+
+    const displayedNews = newsData.slice(0, visibleCount);
 
     return (
         <section className="w-full flex flex-col gap-8">
-            {news.map((item, index) => (
+            {displayedNews.map((item, index) => (
                 <NewsCard
-                    key={index}
+                    key={item.id}
                     imageSrc={item.imageSrc}
-                    category={item.category}
+                    category=""
                     title={item.title}
-                    description={item.description}
-                    articleLink={item.articleLink}
+                    description={item.excerpt}
+                    articleLink={`/news/${item.slug}`}
                 />
             ))}
-            <div className="flex justify-center">
-                <button
-                    onClick={loadMoreNews}
-                    className="border border-blue-950 text-blue-950 hover:bg-blue-950 hover:text-white transition-colors duration-200 ease-in-out px-6 py-2 text-sm uppercase font-light"
-                >
-                    View More
-                </button>
-            </div>
+
+            {visibleCount < newsData.length && (
+                <div className="flex justify-center">
+                    <button
+                        onClick={loadMoreNews}
+                        className="border border-blue-950 text-blue-950 hover:bg-blue-950 hover:text-white transition-colors duration-200 ease-in-out px-6 py-2 text-sm uppercase font-light"
+                    >
+                        View More
+                    </button>
+                </div>
+            )}
         </section>
     );
 };
