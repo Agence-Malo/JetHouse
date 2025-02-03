@@ -5,18 +5,20 @@ import Link from "next/link";
 
 interface INewsCardProps {
     imageSrc: string;
-    category: string;
+    // category?: string;
     title: string;
     description: string;
     articleLink: string;
+    publicationDate?: string;
 }
 
 const NewsCard = ({
                       imageSrc,
-                      category,
+                      // category,
                       title,
                       description,
                       articleLink,
+                      publicationDate,
                   }: INewsCardProps) => {
     return (
         <article className="flex flex-row items-start gap-4">
@@ -31,15 +33,24 @@ const NewsCard = ({
             </div>
 
             <div className="flex flex-col justify-start gap-3">
-                <label className="uppercase text-xs 2xl:text-sm text-blue-950 font-light tracking-wider">
-                    {category}
-                </label>
+                {publicationDate && (
+                    <time className="text-xs text-gray-500">
+                        {new Date(publicationDate).toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                        })}
+                    </time>
+                )}
+
                 <h3 className="text-blue-950 text-lg 2xl:text-xl font-bold leading-tight max-w-[60ch]">
                     {title}
                 </h3>
+
                 <p className="text-blue-950 text-sm 2xl:text-md font-normal leading-relaxed max-w-[60ch]">
                     {description}
                 </p>
+
                 <Link
                     href={articleLink}
                     className="text-gray-400 underline uppercase underline-offset-4 text-sm font-medium hover:opacity-70 transition-opacity duration-200 ease-in-out"
