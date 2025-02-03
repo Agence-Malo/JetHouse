@@ -11,16 +11,18 @@ export async function generateStaticParams() {
     }));
 }
 
-export default function SingleArticlePage({
-                                              params,
-                                          }: {
-    params: { slug: string };
-}) {
-    const { slug } = params;
+export const dynamicParams = false;
+
+export default async function SingleArticlePage({
+                                                    params,
+                                                }: {
+    params: any;
+}): Promise<any> {
+    const { slug } = await Promise.resolve(params);
 
     const article = newsData.find((item) => item.slug === slug);
     if (!article) {
-        return notFound();
+        notFound();
     }
 
     const otherArticles = newsData.filter((item) => item.slug !== slug).slice(0, 3);
@@ -66,8 +68,7 @@ export default function SingleArticlePage({
                     <h2 className="text-2xl font-semibold text-blue-950">More Articles</h2>
                     <Link
                         href="/news"
-                        className="border border-blue-950 text-blue-950 px-6 py-2 text-sm uppercase font-light
-                      hover:bg-blue-950 hover:text-white transition-colors duration-200"
+                        className="border border-blue-950 text-blue-950 px-6 py-2 text-sm uppercase font-light hover:bg-blue-950 hover:text-white transition-colors duration-200"
                     >
                         View All
                     </Link>
