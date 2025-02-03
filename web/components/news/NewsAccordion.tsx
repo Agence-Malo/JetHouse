@@ -38,11 +38,21 @@ const yearsData = [
     },
 ];
 
-const NewsAccordion = () => {
+interface NewsAccordionProps {
+    onMonthSelect?: (year: number, monthIndex: number) => void;
+}
+
+const NewsAccordion: React.FC<NewsAccordionProps> = ({ onMonthSelect }) => {
     const [expandedKeys, setExpandedKeys] = useState<Selection>(new Set());
 
     const onChange = (keys: Selection) => {
         setExpandedKeys(keys);
+    };
+
+    const handleMonthClick = (year: number, monthIndex: number) => {
+        if (onMonthSelect) {
+            onMonthSelect(year, monthIndex);
+        }
     };
 
     return (
@@ -67,10 +77,11 @@ const NewsAccordion = () => {
                             }
                         >
                             <ul className="pl-2">
-                                {item.months.map((month) => (
+                                {item.months.map((month, index) => (
                                     <li
                                         key={month}
                                         className="text-blue-950 text-sm py-1 hover:underline cursor-pointer"
+                                        onClick={() => handleMonthClick(item.year, index)}
                                     >
                                         {month}
                                     </li>
