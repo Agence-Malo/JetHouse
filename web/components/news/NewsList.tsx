@@ -1,49 +1,81 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import NewsCard from "./NewsCard";
-import { newsData } from "@/data/newsData";
+import axios from "axios";
 
 interface NewsListProps {
     selectedYear?: number | null;
     selectedMonth?: number | null;
 }
 
+interface NewsArticle {
+    id: number;
+    slug: string;
+    title: string;
+    excerpt: string;
+    publicationDate: string;
+    imageSrc: string;
+}
+
 const NewsList: React.FC<NewsListProps> = ({ selectedYear, selectedMonth }) => {
-    const [visibleCount, setVisibleCount] = useState(2);
+    const [visibleCount, setVisibleCount] = useState<number>(2);
+    const [newsArticles, setNewsArticles] = useState<NewsArticle[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [errorMsg, setErrorMsg] = useState<string>("");
 
-    const filteredNews = useMemo(() => {
-        let result = [...newsData];
+    const baseUrl = process.env.NEXT_PUBLIC_PAYLOAD_URL || "";
 
-        if (
-            selectedYear !== null &&
-            selectedMonth !== null &&
-            selectedYear !== undefined &&
-            selectedMonth !== undefined
-        ) {
-            result = result.filter((item) => {
-                const dateObj = new Date(item.publicationDate);
-                const year = dateObj.getFullYear();
-                const month = dateObj.getMonth(); // 0-based
-                return year === selectedYear && month === selectedMonth;
-            });
+    const queryUrl = useMemo(() => {
+        const params = new URLSearchParams();
+        params.append("limit", visibleCount.toString());
+        params.append("sort", "-publicationDate");
+
+        if (selectedYear != null && selectedMonth != null) {
+            const startDate = new Date(selectedYear, selectedMonth, 1).toISOString();
+            const endDate = new Date(selectedYear, selectedMonth + 1, 0, 23, 59, 59, 999).toISOString();
+            params.append("where[publicationDate][greater_than_or_equal]", startDate);
+            params.append("where[publicationDate][less_than_or_equal]", endDate);
         }
 
-        return result;
-    }, [selectedYear, selectedMonth]);
+        return `${baseUrl}/api/news?${params.toString()}`;
+    }, [baseUrl, visibleCount, selectedYear, selectedMonth]);
 
-    const displayedNews = filteredNews.slice(0, visibleCount);
+    useEffect(() => {
+        const fetchNews = async () => {
+            try {
+                const res = await axios.get(queryUrl, {
+                    headers: { "Content-Type": "application/json" },
+                });
+                setNewsArticles(res.data.docs);
+                setIsLoading(false);
+            } catch (error: any) {
+                setErrorMsg(error.message || "Failed to load news.");
+                setIsLoading(false);
+            }
+        };
+
+        fetchNews();
+    }, [queryUrl]);
 
     const loadMoreNews = () => {
         setVisibleCount((prev) => prev + 2);
     };
 
+    if (isLoading) {
+        return <p className="text-center">Loading news...</p>;
+    }
+
+    if (errorMsg) {
+        return <p className="text-center text-red-500">{errorMsg}</p>;
+    }
+
     return (
         <section className="w-full flex flex-col gap-8">
-            {displayedNews.map((item) => (
+            {newsArticles.map((item) => (
                 <NewsCard
                     key={item.id}
-                    imageSrc={item.imageSrc}
+                    imageSrc={item.imageSrc || "/placeholder.jpg"}
                     title={item.title}
                     description={item.excerpt}
                     publicationDate={item.publicationDate}
@@ -51,7 +83,7 @@ const NewsList: React.FC<NewsListProps> = ({ selectedYear, selectedMonth }) => {
                 />
             ))}
 
-            {visibleCount < filteredNews.length && (
+            {newsArticles.length > 0 && visibleCount < newsArticles.length && (
                 <div className="flex justify-center">
                     <button
                         onClick={loadMoreNews}
@@ -62,7 +94,7 @@ const NewsList: React.FC<NewsListProps> = ({ selectedYear, selectedMonth }) => {
                 </div>
             )}
 
-            {filteredNews.length === 0 && (
+            {newsArticles.length === 0 && (
                 <p className="text-center text-gray-500">No news found for this month.</p>
             )}
         </section>

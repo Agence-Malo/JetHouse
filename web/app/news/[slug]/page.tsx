@@ -1,40 +1,104 @@
-import { notFound } from "next/navigation";
+"use client";
+
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { newsData } from "@/data/newsData";
+import axios from "axios";
 import { Navbar } from "@/components/nav";
 import Footer from "@/components/footer";
 
-export async function generateStaticParams() {
-    return newsData.map((item) => ({
-        slug: item.slug,
-    }));
+interface NewsArticle {
+    id: number;
+    slug: string;
+    title: string;
+    publicationDate: string;
+    imageSrc: string;
+    fullContent: string;
 }
 
-export const dynamicParams = false;
+interface NewsResponse {
+    docs: NewsArticle[];
+}
 
-export default async function SingleArticlePage({
-                                                    params,
-                                                }: {
-    params: any;
-}): Promise<any> {
-    const { slug } = await Promise.resolve(params);
+const SingleArticlePage = () => {
+    const { slug } = useParams();
+    const router = useRouter();
 
-    const article = newsData.find((item) => item.slug === slug);
-    if (!article) {
-        notFound();
+    const [article, setArticle] = useState<NewsArticle | null>(null);
+    const [otherArticles, setOtherArticles] = useState<NewsArticle[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [errorMsg, setErrorMsg] = useState<string>("");
+
+    const baseUrl = process.env.NEXT_PUBLIC_PAYLOAD_URL || "";
+
+    useEffect(() => {
+        if (!slug) return;
+        const fetchArticle = async () => {
+            try {
+                const res = await axios.get<NewsResponse>(`${baseUrl}/api/news`, {
+                    params: {
+                        "where[slug][equals]": slug,
+                        depth: 1,
+                    },
+                    headers: { "Content-Type": "application/json" },
+                });
+
+                if (res.data.docs.length === 0) {
+                    setErrorMsg("Article not found.");
+                    setIsLoading(false);
+                    return;
+                }
+
+                setArticle(res.data.docs[0]);
+
+                const resOther = await axios.get<NewsResponse>(`${baseUrl}/api/news`, {
+                    params: {
+                        "where[slug][not_equals]": slug,
+                        limit: 3,
+                        depth: 1,
+                    },
+                    headers: { "Content-Type": "application/json" },
+                });
+
+                setOtherArticles(resOther.data.docs);
+                setIsLoading(false);
+            } catch (error: any) {
+                setErrorMsg(error.message || "Failed to load article.");
+                setIsLoading(false);
+            }
+        };
+
+        fetchArticle();
+    }, [slug, baseUrl]);
+
+    if (isLoading) {
+        return (
+            <main className="w-full flex flex-col items-center">
+                <Navbar invert={-20} />
+                <p className="text-center mt-32">Loading article...</p>
+                <Footer />
+            </main>
+        );
     }
 
-    const otherArticles = newsData.filter((item) => item.slug !== slug).slice(0, 3);
+    if (errorMsg) {
+        return (
+            <main className="w-full flex flex-col items-center">
+                <Navbar invert={-20} />
+                <p className="text-center mt-32 text-red-500">{errorMsg}</p>
+                <Footer />
+            </main>
+        );
+    }
 
-    const dateObj = new Date(article.publicationDate);
+    const dateObj = new Date(article!.publicationDate);
     const options: Intl.DateTimeFormatOptions = {
         day: "numeric",
         month: "short",
         year: "numeric",
     };
-    const rawDate = dateObj.toLocaleString("en-US", options);
-    const formattedDate = rawDate.toUpperCase();
+    const formattedDate = dateObj.toLocaleString("en-US", options).toUpperCase();
 
     return (
         <main className="w-full flex flex-col items-center">
@@ -46,20 +110,20 @@ export default async function SingleArticlePage({
                 </div>
 
                 <h1 className="text-3xl md:text-5xl font-bold text-blue-950 mb-6">
-                    {article.title}
+                    {article!.title}
                 </h1>
 
                 <div className="relative w-full h-[350px] md:h-[500px] mb-10">
                     <Image
-                        src={article.imageSrc}
-                        alt={article.title}
+                        src={article!.imageSrc}
+                        alt={article!.title}
                         fill
                         className="object-cover rounded-lg"
                     />
                 </div>
 
                 <div className="max-w-3xl mx-auto text-blue-950 text-base md:text-lg leading-relaxed space-y-4">
-                    {article.fullContent}
+                    {article!.fullContent}
                 </div>
             </div>
 
@@ -102,4 +166,6 @@ export default async function SingleArticlePage({
             <Footer />
         </main>
     );
-}
+};
+
+export default SingleArticlePage;
