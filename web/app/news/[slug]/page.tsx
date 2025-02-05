@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import axios from "axios";
@@ -23,8 +23,6 @@ interface NewsResponse {
 
 const SingleArticlePage = () => {
     const { slug } = useParams();
-    const router = useRouter();
-
     const [article, setArticle] = useState<NewsArticle | null>(null);
     const [otherArticles, setOtherArticles] = useState<NewsArticle[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -34,42 +32,53 @@ const SingleArticlePage = () => {
 
     useEffect(() => {
         if (!slug) return;
-        const fetchArticle = async () => {
+
+        const fetchArticleData = async () => {
             try {
-                const res = await axios.get<NewsResponse>(`${baseUrl}/api/news`, {
+                const articleRes = await axios.get<NewsResponse>(`${baseUrl}/api/news`, {
                     params: {
                         "where[slug][equals]": slug,
                         depth: 1,
+                        "select[id]": true,
+                        "select[slug]": true,
+                        "select[title]": true,
+                        "select[publicationDate]": true,
+                        "select[imageSrc]": true,
+                        "select[fullContent]": true,
                     },
                     headers: { "Content-Type": "application/json" },
                 });
 
-                if (res.data.docs.length === 0) {
+                if (articleRes.data.docs.length === 0) {
                     setErrorMsg("Article not found.");
-                    setIsLoading(false);
                     return;
                 }
 
-                setArticle(res.data.docs[0]);
+                setArticle(articleRes.data.docs[0]);
 
-                const resOther = await axios.get<NewsResponse>(`${baseUrl}/api/news`, {
+                const otherRes = await axios.get<NewsResponse>(`${baseUrl}/api/news`, {
                     params: {
                         "where[slug][not_equals]": slug,
                         limit: 3,
                         depth: 1,
+                        "select[id]": true,
+                        "select[slug]": true,
+                        "select[title]": true,
+                        "select[publicationDate]": true,
+                        "select[imageSrc]": true,
                     },
                     headers: { "Content-Type": "application/json" },
                 });
 
-                setOtherArticles(resOther.data.docs);
-                setIsLoading(false);
+                setOtherArticles(otherRes.data.docs);
             } catch (error: any) {
                 setErrorMsg(error.message || "Failed to load article.");
+            } finally {
                 setIsLoading(false);
             }
         };
 
-        fetchArticle();
+        fetchArticleData();
     }, [slug, baseUrl]);
 
     if (isLoading) {
@@ -92,6 +101,7 @@ const SingleArticlePage = () => {
         );
     }
 
+    // Форматуємо дату публікації
     const dateObj = new Date(article!.publicationDate);
     const options: Intl.DateTimeFormatOptions = {
         day: "numeric",
