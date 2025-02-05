@@ -1,41 +1,53 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
-import NewsCard from "./NewsCard";
 import axios from "axios";
+import NewsCard from "./NewsCard";
+import placeholder from "../../public/Images/About us/malta.png";
 
 interface NewsListProps {
     selectedYear?: number | null;
     selectedMonth?: number | null;
 }
 
-interface NewsArticle {
+interface NewsDoc {
     id: number;
     slug: string;
     title: string;
-    excerpt: string;
-    publicationDate: string;
-    imageSrc: string;
+    excerpt?: string;
+    image?: {
+        url?: string;
+    };
+    category?: {
+        id: number;
+        name: string;
+        slug: string;
+    } | null;
 }
 
-const NewsList: React.FC<NewsListProps> = ({ selectedYear, selectedMonth }) => {
-    const [visibleCount, setVisibleCount] = useState<number>(2);
-    const [newsArticles, setNewsArticles] = useState<NewsArticle[]>([]);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [errorMsg, setErrorMsg] = useState<string>("");
+interface PayloadResponse {
+    docs: NewsDoc[];
+    totalDocs: number;
+}
+
+export default function NewsList({ selectedYear, selectedMonth }: NewsListProps) {
+    const [visibleCount, setVisibleCount] = useState(2);
+    const [newsArticles, setNewsArticles] = useState<NewsDoc[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [errorMsg, setErrorMsg] = useState("");
 
     const baseUrl = process.env.NEXT_PUBLIC_PAYLOAD_URL || "";
 
     const queryUrl = useMemo(() => {
         const params = new URLSearchParams();
-        params.append("limit", visibleCount.toString());
-        params.append("sort", "-publicationDate");
+        params.append("limit", String(visibleCount));
+        params.append("sort", "-date");
 
         if (selectedYear != null && selectedMonth != null) {
             const startDate = new Date(selectedYear, selectedMonth, 1).toISOString();
             const endDate = new Date(selectedYear, selectedMonth + 1, 0, 23, 59, 59, 999).toISOString();
-            params.append("where[publicationDate][greater_than_or_equal]", startDate);
-            params.append("where[publicationDate][less_than_or_equal]", endDate);
+            params.append("where[date][greater_than_or_equal]", startDate);
+            params.append("where[date][less_than_or_equal]", endDate);
         }
 
         return `${baseUrl}/api/news?${params.toString()}`;
@@ -44,9 +56,13 @@ const NewsList: React.FC<NewsListProps> = ({ selectedYear, selectedMonth }) => {
     useEffect(() => {
         const fetchNews = async () => {
             try {
-                const res = await axios.get(queryUrl, {
+                setIsLoading(true);
+                setErrorMsg("");
+
+                const res = await axios.get<PayloadResponse>(queryUrl, {
                     headers: { "Content-Type": "application/json" },
                 });
+
                 setNewsArticles(res.data.docs);
                 setIsLoading(false);
             } catch (error: any) {
@@ -59,7 +75,7 @@ const NewsList: React.FC<NewsListProps> = ({ selectedYear, selectedMonth }) => {
     }, [queryUrl]);
 
     const loadMoreNews = () => {
-        setVisibleCount((prev) => prev + 2);
+        setVisibleCount(prev => prev + 2);
     };
 
     if (isLoading) {
@@ -72,18 +88,21 @@ const NewsList: React.FC<NewsListProps> = ({ selectedYear, selectedMonth }) => {
 
     return (
         <section className="w-full flex flex-col gap-8">
-            {newsArticles.map((item) => (
-                <NewsCard
-                    key={item.id}
-                    imageSrc={item.imageSrc || "/placeholder.jpg"}
-                    title={item.title}
-                    description={item.excerpt}
-                    publicationDate={item.publicationDate}
-                    articleLink={`/news/${item.slug}`}
-                />
-            ))}
+            {newsArticles.map((item) => {
+                const imageSrc = item.image?.url || 'placeholder';
+                return (
+                    <NewsCard
+                        key={item.id}
+                        imageSrc={imageSrc}
+                        category={item.category?.name || ""}
+                        title={item.title}
+                        description={item.excerpt || ""}
+                        articleLink={`/news/${item.slug}`}
+                    />
+                );
+            })}
 
-            {newsArticles.length > 0 && visibleCount < newsArticles.length && (
+            {newsArticles.length > 0 && (
                 <div className="flex justify-center">
                     <button
                         onClick={loadMoreNews}
@@ -99,6 +118,4 @@ const NewsList: React.FC<NewsListProps> = ({ selectedYear, selectedMonth }) => {
             )}
         </section>
     );
-};
-
-export default NewsList;
+}
