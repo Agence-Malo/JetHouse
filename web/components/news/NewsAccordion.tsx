@@ -44,12 +44,14 @@ interface NewsAccordionProps {
 
 const NewsAccordion: React.FC<NewsAccordionProps> = ({ onMonthSelect }) => {
     const [expandedKeys, setExpandedKeys] = useState<Selection>(new Set());
+    const [activeSelection, setActiveSelection] = useState<{ year: number; monthIndex: number } | null>(null);
 
     const onChange = (keys: Selection) => {
         setExpandedKeys(keys);
     };
 
     const handleMonthClick = (year: number, monthIndex: number) => {
+        setActiveSelection({ year, monthIndex });
         if (onMonthSelect) {
             onMonthSelect(year, monthIndex);
         }
@@ -57,11 +59,7 @@ const NewsAccordion: React.FC<NewsAccordionProps> = ({ onMonthSelect }) => {
 
     return (
         <aside className="flex flex-col gap-4">
-            <Accordion
-                variant="light"
-                selectedKeys={expandedKeys}
-                onSelectionChange={onChange}
-            >
+            <Accordion variant="light" selectedKeys={expandedKeys} onSelectionChange={onChange}>
                 {yearsData.map((item) => {
                     const keyStr = String(item.year);
                     return (
@@ -77,15 +75,21 @@ const NewsAccordion: React.FC<NewsAccordionProps> = ({ onMonthSelect }) => {
                             }
                         >
                             <ul className="pl-2">
-                                {item.months.map((month, index) => (
-                                    <li
-                                        key={month}
-                                        className="text-blue-950 text-sm py-1 hover:underline cursor-pointer"
-                                        onClick={() => handleMonthClick(item.year, index)}
-                                    >
-                                        {month}
-                                    </li>
-                                ))}
+                                {item.months.map((month, index) => {
+                                    const isActive =
+                                        activeSelection?.year === item.year && activeSelection?.monthIndex === index;
+                                    return (
+                                        <li
+                                            key={month}
+                                            className={`text-blue-950 text-sm py-1 cursor-pointer hover:underline ${
+                                                isActive ? "font-bold" : "font-normal"
+                                            }`}
+                                            onClick={() => handleMonthClick(item.year, index)}
+                                        >
+                                            {month}
+                                        </li>
+                                    );
+                                })}
                             </ul>
                         </AccordionItem>
                     );

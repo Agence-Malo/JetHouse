@@ -48,8 +48,12 @@ export default function NewsList({ selectedYear, selectedMonth }: NewsListProps)
         params.append("depth", "1");
 
         if (selectedYear != null && selectedMonth != null) {
-            const startDate = new Date(selectedYear, selectedMonth, 1).toISOString();
-            const endDate = new Date(selectedYear, selectedMonth + 1, 0, 23, 59, 59, 999).toISOString();
+            const startDate = new Date(selectedYear, selectedMonth, 1)
+                .toISOString()
+                .split("T")[0];
+            const endDate = new Date(selectedYear, selectedMonth + 1, 0)
+                .toISOString()
+                .split("T")[0];
             params.append("where[date][greater_than_or_equal]", startDate);
             params.append("where[date][less_than_or_equal]", endDate);
         }
