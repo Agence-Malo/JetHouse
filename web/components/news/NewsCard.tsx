@@ -1,10 +1,10 @@
 "use client";
 
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import Link from "next/link";
 
 interface INewsCardProps {
-    imageSrc: string;
+    imageSrc: string | StaticImageData;
     category?: string;
     title: string;
     description: string;
@@ -20,12 +20,20 @@ export default function NewsCard({
                                      articleLink,
                                      publicationDate,
                                  }: INewsCardProps) {
+    const baseUrl = process.env.NEXT_PUBLIC_PAYLOAD_URL || "";
+    const finalImageSrc =
+        typeof imageSrc === "string"
+            ? imageSrc.startsWith("http")
+                ? imageSrc
+                : `${baseUrl}${imageSrc}`
+            : imageSrc;
+
     return (
         <article className="flex flex-row items-start gap-4">
             <div className="w-[120px] h-[120px] md:w-[230px] md:h-[230px] flex-shrink-0">
                 <Image
-                    src={imageSrc}
-                    alt={title}
+                    src={finalImageSrc}
+                    alt={title || "News Image"}
                     width={180}
                     height={180}
                     className="w-full h-full object-cover rounded-lg"

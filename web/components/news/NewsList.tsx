@@ -17,6 +17,9 @@ interface NewsDoc {
     excerpt?: string;
     image?: {
         url?: string;
+        alt?: string;
+        width?: number;
+        height?: number;
     };
     category?: {
         id: number;
@@ -42,6 +45,7 @@ export default function NewsList({ selectedYear, selectedMonth }: NewsListProps)
         const params = new URLSearchParams();
         params.append("limit", String(visibleCount));
         params.append("sort", "-date");
+        params.append("depth", "1");
 
         if (selectedYear != null && selectedMonth != null) {
             const startDate = new Date(selectedYear, selectedMonth, 1).toISOString();
@@ -64,9 +68,9 @@ export default function NewsList({ selectedYear, selectedMonth }: NewsListProps)
                 });
 
                 setNewsArticles(res.data.docs);
-                setIsLoading(false);
             } catch (error: any) {
                 setErrorMsg(error.message || "Failed to load news.");
+            } finally {
                 setIsLoading(false);
             }
         };
@@ -75,7 +79,7 @@ export default function NewsList({ selectedYear, selectedMonth }: NewsListProps)
     }, [queryUrl]);
 
     const loadMoreNews = () => {
-        setVisibleCount(prev => prev + 2);
+        setVisibleCount((prev) => prev + 2);
     };
 
     if (isLoading) {
@@ -89,7 +93,10 @@ export default function NewsList({ selectedYear, selectedMonth }: NewsListProps)
     return (
         <section className="w-full flex flex-col gap-8">
             {newsArticles.map((item) => {
-                const imageSrc = item.image?.url || 'placeholder';
+                const imageSrc = item.image?.url
+                    ? `${baseUrl}${item.image.url}`
+                    : placeholder;
+
                 return (
                     <NewsCard
                         key={item.id}
