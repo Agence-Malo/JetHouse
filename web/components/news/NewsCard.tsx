@@ -9,7 +9,6 @@ interface INewsCardProps {
     title: string;
     description: string;
     articleLink: string;
-    publicationDate?: string;
 }
 
 export default function NewsCard({
@@ -18,7 +17,6 @@ export default function NewsCard({
                                      title,
                                      description,
                                      articleLink,
-                                     publicationDate,
                                  }: INewsCardProps) {
     const baseUrl = process.env.NEXT_PUBLIC_PAYLOAD_URL || "";
     const finalImageSrc =
