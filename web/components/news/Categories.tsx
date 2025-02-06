@@ -10,7 +10,12 @@ interface Category {
     name: string;
 }
 
-const Categories = () => {
+interface CategoriesProps {
+    selectedCategory: string | null;
+    onCategorySelect: (category: string | null) => void;
+}
+
+const Categories = ({ selectedCategory, onCategorySelect }: CategoriesProps) => {
     const [categories, setCategories] = useState<Category[] | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [errorMsg, setErrorMsg] = useState<string>("");
@@ -46,15 +51,25 @@ const Categories = () => {
     return (
         <section className="w-full flex justify-center items-center bg-white text-blue-950 border-b border-blue-950">
             <nav className="containerize flex justify-evenly items-center py-4 lg:gap-10 gap-4">
-                {categories?.map((cat) => (
-                    <Link
-                        href={`/news?category=${cat.slug}`}
-                        key={cat.id}
-                        className="uppercase font-light hover:font-bold transition-[font-weight] duration-200 ease-in-out"
-                    >
-                        {cat.name}
-                    </Link>
-                ))}
+                {categories?.map((cat) => {
+                    const isActive = selectedCategory === cat.slug;
+
+                    return (
+                        <button
+                            key={cat.id}
+                            onClick={() => {
+                                const newCategory = isActive ? null : cat.slug;
+                                onCategorySelect(newCategory);
+
+                                const newUrl = newCategory ? `/news?category=${newCategory}` : "/news";
+                                window.history.pushState(null, "", newUrl);
+                            }}
+                            className={`uppercase font-light hover:font-bold transition-[font-weight] duration-200 ease-in-out ${isActive ? "font-bold" : ""}`}
+                        >
+                            {cat.name}
+                        </button>
+                    );
+                })}
             </nav>
         </section>
     );

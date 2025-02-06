@@ -8,6 +8,7 @@ import placeholder from "../../public/Images/About us/malta.png";
 interface NewsListProps {
     selectedYear?: number | null;
     selectedMonth?: number | null;
+    selectedCategory?: string | null;
 }
 
 interface NewsDoc {
@@ -33,7 +34,7 @@ interface PayloadResponse {
     totalDocs: number;
 }
 
-export default function NewsList({ selectedYear, selectedMonth }: NewsListProps) {
+export default function NewsList({ selectedYear, selectedMonth, selectedCategory }: NewsListProps) {
     const [visibleCount, setVisibleCount] = useState(2);
     const [newsArticles, setNewsArticles] = useState<NewsDoc[]>([]);
     const [totalDocs, setTotalDocs] = useState(0);
@@ -59,8 +60,12 @@ export default function NewsList({ selectedYear, selectedMonth }: NewsListProps)
             params.append("where[date][less_than_or_equal]", endDate);
         }
 
+        if (selectedCategory) {
+            params.append("where[category.slug][equals]", selectedCategory);
+        }
+
         return `${baseUrl}/api/news?${params.toString()}`;
-    }, [baseUrl, visibleCount, selectedYear, selectedMonth]);
+    }, [baseUrl, visibleCount, selectedYear, selectedMonth, selectedCategory]);
 
     useEffect(() => {
         const fetchNews = async () => {
@@ -129,7 +134,7 @@ export default function NewsList({ selectedYear, selectedMonth }: NewsListProps)
             )}
 
             {newsArticles.length === 0 && (
-                <p className="text-center text-gray-500">No news found for this month.</p>
+                <p className="text-center text-gray-500">No news found for this category.</p>
             )}
         </section>
     );

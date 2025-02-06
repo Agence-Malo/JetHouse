@@ -14,6 +14,7 @@ const View = dynamic(() => import("@/components/view"));
 export default function NewsPageClient() {
     const [selectedYear, setSelectedYear] = useState<number | null>(null);
     const [selectedMonth, setSelectedMonth] = useState<number | null>(null);
+    const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
     const handleMonthSelect = (year: number, monthIndex: number) => {
         setSelectedYear(year);
@@ -29,12 +30,12 @@ export default function NewsPageClient() {
                 Latest News
             </h1>
 
-            <Categories/>
+            <Categories selectedCategory={selectedCategory} onCategorySelect={setSelectedCategory} />
             <NewsHero />
 
             <section className="containerize flex flex-col-reverse lg:flex-row items-stretch justify-between gap-8 py-8">
                 <div className="w-full lg:w-[60%] flex flex-col gap-8">
-                    <NewsList selectedYear={selectedYear} selectedMonth={selectedMonth} />
+                    <NewsList selectedYear={selectedYear} selectedMonth={selectedMonth} selectedCategory={selectedCategory} />
                 </div>
 
                 <div className="w-full lg:w-[30%] border-l border-blue-950 pl-4">
