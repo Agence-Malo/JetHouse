@@ -36,6 +36,7 @@ interface PayloadResponse {
 export default function NewsList({ selectedYear, selectedMonth }: NewsListProps) {
     const [visibleCount, setVisibleCount] = useState(2);
     const [newsArticles, setNewsArticles] = useState<NewsDoc[]>([]);
+    const [totalDocs, setTotalDocs] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
     const [errorMsg, setErrorMsg] = useState("");
 
@@ -72,6 +73,7 @@ export default function NewsList({ selectedYear, selectedMonth }: NewsListProps)
                 });
 
                 setNewsArticles(res.data.docs);
+                setTotalDocs(res.data.totalDocs);
             } catch (error: any) {
                 setErrorMsg(error.message || "Failed to load news.");
             } finally {
@@ -83,7 +85,9 @@ export default function NewsList({ selectedYear, selectedMonth }: NewsListProps)
     }, [queryUrl]);
 
     const loadMoreNews = () => {
-        setVisibleCount((prev) => prev + 2);
+        if (visibleCount < totalDocs) {
+            setVisibleCount((prev) => prev + 2);
+        }
     };
 
     if (isLoading) {
@@ -113,7 +117,7 @@ export default function NewsList({ selectedYear, selectedMonth }: NewsListProps)
                 );
             })}
 
-            {newsArticles.length > 0 && (
+            {newsArticles.length > 0 && newsArticles.length < totalDocs && (
                 <div className="flex justify-center">
                     <button
                         onClick={loadMoreNews}
