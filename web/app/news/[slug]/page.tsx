@@ -7,14 +7,21 @@ import Link from "next/link";
 import axios from "axios";
 import { Navbar } from "@/components/nav";
 import Footer from "@/components/footer";
+import placeholder from "@/public/Images/About us/malta.png";
 
 interface NewsArticle {
     id: number;
     slug: string;
     title: string;
-    publicationDate: string;
-    imageSrc: string;
-    fullContent: string;
+    publicationDate?: string;
+    image?: {
+        url?: string;
+        alt?: string;
+    };
+    fullContent?: string;
+    category?: {
+        name: string;
+    };
 }
 
 interface NewsResponse {
@@ -35,16 +42,18 @@ const SingleArticlePage = () => {
 
         const fetchArticleData = async () => {
             try {
+                setIsLoading(true);
+                setErrorMsg("");
+
                 const articleRes = await axios.get<NewsResponse>(`${baseUrl}/api/news`, {
                     params: {
                         "where[slug][equals]": slug,
                         depth: 1,
-                        "select[id]": true,
-                        "select[slug]": true,
                         "select[title]": true,
                         "select[publicationDate]": true,
-                        "select[imageSrc]": true,
+                        "select[image]": true,
                         "select[fullContent]": true,
+                        "select[category.name]": true,
                     },
                     headers: { "Content-Type": "application/json" },
                 });
@@ -56,6 +65,7 @@ const SingleArticlePage = () => {
 
                 setArticle(articleRes.data.docs[0]);
 
+
                 const otherRes = await axios.get<NewsResponse>(`${baseUrl}/api/news`, {
                     params: {
                         "where[slug][not_equals]": slug,
@@ -65,7 +75,7 @@ const SingleArticlePage = () => {
                         "select[slug]": true,
                         "select[title]": true,
                         "select[publicationDate]": true,
-                        "select[imageSrc]": true,
+                        "select[image]": true,
                     },
                     headers: { "Content-Type": "application/json" },
                 });
@@ -101,39 +111,50 @@ const SingleArticlePage = () => {
         );
     }
 
-    // Форматуємо дату публікації
-    const dateObj = new Date(article!.publicationDate);
-    const options: Intl.DateTimeFormatOptions = {
-        day: "numeric",
-        month: "short",
-        year: "numeric",
-    };
-    const formattedDate = dateObj.toLocaleString("en-US", options).toUpperCase();
+    const formattedDate =
+        article?.publicationDate && !isNaN(new Date(article.publicationDate).getTime())
+            ? new Date(article.publicationDate).toLocaleDateString("en-US", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+            }).toUpperCase()
+            : "DATE UNKNOWN";
+
+    const imageSrc =
+        article?.image?.url && article.image.url.startsWith("http")
+            ? article.image.url
+            : article?.image?.url
+                ? `${baseUrl}${article.image.url}`
+                : placeholder;
 
     return (
         <main className="w-full flex flex-col items-center">
             <Navbar invert={-20} />
 
-            <div className="w-full max-w-[1200px] py-32 px-4">
-                <div className="mb-2 text-xs tracking-wider text-blue-950 uppercase">
-                    {formattedDate}
-                </div>
+            <div className="w-full max-w-[1200px] py-36 px-4">
+                {article?.category?.name && (
+                    <div className="mb-2 text-xs tracking-wider text-blue-950 uppercase">
+                        {article.category.name}
+                    </div>
+                )}
 
                 <h1 className="text-3xl md:text-5xl font-bold text-blue-950 mb-6">
-                    {article!.title}
+                    {article?.title}
                 </h1>
+
+                <div className="mb-4 text-sm text-gray-600 uppercase">{formattedDate}</div>
 
                 <div className="relative w-full h-[350px] md:h-[500px] mb-10">
                     <Image
-                        src={article!.imageSrc}
-                        alt={article!.title}
+                        src={imageSrc}
+                        alt={article?.image?.alt || "News Image"}
                         fill
                         className="object-cover rounded-lg"
                     />
                 </div>
 
                 <div className="max-w-3xl mx-auto text-blue-950 text-base md:text-lg leading-relaxed space-y-4">
-                    {article!.fullContent}
+                    {article?.fullContent || "No content available."}
                 </div>
             </div>
 
@@ -149,27 +170,36 @@ const SingleArticlePage = () => {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {otherArticles.map((item) => (
-                        <div key={item.id} className="flex flex-col">
-                            <div className="relative w-full h-[200px] md:h-[250px]">
-                                <Image
-                                    src={item.imageSrc}
-                                    alt={item.title}
-                                    fill
-                                    className="object-cover rounded-md"
-                                />
+                    {otherArticles.map((item) => {
+                        const otherImageSrc =
+                            item.image?.url && item.image.url.startsWith("http")
+                                ? item.image.url
+                                : item.image?.url
+                                    ? `${baseUrl}${item.image.url}`
+                                    : placeholder;
+
+                        return (
+                            <div key={item.id} className="flex flex-col">
+                                <div className="relative w-full h-[200px] md:h-[250px]">
+                                    <Image
+                                        src={otherImageSrc}
+                                        alt={item.image?.alt || "News Image"}
+                                        fill
+                                        className="object-cover rounded-md"
+                                    />
+                                </div>
+                                <h3 className="text-blue-950 font-semibold text-md md:text-lg mt-3">
+                                    {item.title}
+                                </h3>
+                                <Link
+                                    href={`/news/${item.slug}`}
+                                    className="text-blue-950 underline text-sm mt-2 hover:opacity-70 w-fit"
+                                >
+                                    Read Article
+                                </Link>
                             </div>
-                            <h3 className="text-blue-950 font-semibold text-md md:text-lg mt-3">
-                                {item.title}
-                            </h3>
-                            <Link
-                                href={`/news/${item.slug}`}
-                                className="text-blue-950 underline text-sm mt-2 hover:opacity-70 w-fit"
-                            >
-                                Read Article
-                            </Link>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
             </section>
 

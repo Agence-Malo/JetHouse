@@ -45,7 +45,7 @@ export const News: CollectionConfig = {
             required: false,
         },
         {
-            name: "content",
+            name: "fullContent",
             label: "Full Content",
             type: "textarea",
             required: false,

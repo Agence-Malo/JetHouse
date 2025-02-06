@@ -165,7 +165,7 @@ export interface News {
   slug: string;
   title: string;
   excerpt?: string | null;
-  content?: string | null;
+  fullContent?: string | null;
   date: string;
   image?: (number | null) | Media;
   category?: (number | null) | Category;
@@ -354,7 +354,7 @@ export interface NewsSelect<T extends boolean = true> {
   slug?: T;
   title?: T;
   excerpt?: T;
-  content?: T;
+  fullContent?: T;
   date?: T;
   image?: T;
   category?: T;
