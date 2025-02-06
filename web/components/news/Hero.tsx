@@ -1,19 +1,90 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import axios from "axios";
 import Image from "next/image";
-import plane from "../../public/home page/62a3250ceb33b680669bf277_2008-Dassault-Falcon-7X-(HB-JST)-08.jpg"
+import placeholder from "../../public/Images/About us/malta.png";
+
+interface NewsDoc {
+    id: number;
+    slug: string;
+    title: string;
+    excerpt?: string;
+    image?: {
+        url?: string;
+        alt?: string;
+        width?: number;
+        height?: number;
+    };
+    category?: {
+        id: number;
+        name: string;
+        slug: string;
+    } | null;
+}
 
 const NewsHero = () => {
+    const [latestNews, setLatestNews] = useState<NewsDoc | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [errorMsg, setErrorMsg] = useState("");
+    const router = useRouter();
+
+    const baseUrl = process.env.NEXT_PUBLIC_PAYLOAD_URL || "";
+    const queryUrl = `${baseUrl}/api/news?limit=1&sort=-date&depth=1`;
+
+    useEffect(() => {
+        const fetchLatestNews = async () => {
+            try {
+                setIsLoading(true);
+                setErrorMsg("");
+
+                const res = await axios.get<{ docs: NewsDoc[] }>(queryUrl, {
+                    headers: { "Content-Type": "application/json" },
+                });
+
+                if (res.data.docs.length > 0) {
+                    setLatestNews(res.data.docs[0]);
+                } else {
+                    setLatestNews(null);
+                }
+            } catch (error: any) {
+                setErrorMsg(error.message || "Failed to load the latest news.");
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchLatestNews();
+    }, [queryUrl]);
+
+    if (isLoading) {
+        return (
+            <section className="relative w-full h-[60vh] flex items-center justify-center bg-black/10">
+                <p className="text-white">Loading latest news...</p>
+            </section>
+        );
+    }
+
+    if (errorMsg || !latestNews) {
+        return (
+            <section className="relative w-full h-[60vh] flex items-center justify-center bg-black/10">
+                <p className="text-white text-center">No news available.</p>
+            </section>
+        );
+    }
+
+    const imageSrc = latestNews.image?.url ? `${baseUrl}${latestNews.image.url}` : placeholder;
+    const newsLink = `/news/${latestNews.slug}`;
+
     return (
         <section
-            className={`
-        relative w-full h-[60vh] flex items-end justify-start
-        bg-black/10 overflow-hidden
-      `}
+            className="relative w-full h-[60vh] flex items-end justify-start bg-black/10 overflow-hidden cursor-pointer"
+            onClick={() => router.push(newsLink)}
         >
             <Image
-                src={plane}
-                alt="Challenger 605"
+                src={imageSrc}
+                alt={latestNews.image?.alt || latestNews.title}
                 fill
                 priority
                 className="object-cover object-center"
@@ -22,10 +93,10 @@ const NewsHero = () => {
 
             <div className="absolute bottom-1 left-12 text-white p-6 md:p-10 max-w-[60ch]">
                 <label className="block uppercase text-xs mb-2 opacity-80">
-                    Categorie
+                    {latestNews.category?.name || "Uncategorized"}
                 </label>
                 <h2 className="text-xl md:text-3xl font-semibold leading-tight">
-                    JetHouse will be expanding its fleet with the addition of a Challenger 605
+                    {latestNews.title}
                 </h2>
             </div>
         </section>
