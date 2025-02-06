@@ -6,6 +6,7 @@ import { Navbar } from "@/components/nav";
 import NewsHero from "@/components/news/Hero";
 import NewsList from "@/components/news/NewsList";
 import NewsAccordion from "@/components/news/NewsAccordion";
+import Categories from "@/components/news/Categories";
 
 const Footer = dynamic(() => import("@/components/footer"));
 const View = dynamic(() => import("@/components/view"));
@@ -28,6 +29,7 @@ export default function NewsPageClient() {
                 Latest News
             </h1>
 
+            <Categories/>
             <NewsHero />
 
             <section className="containerize flex flex-col-reverse lg:flex-row items-stretch justify-between gap-8 py-8">
