@@ -13,7 +13,7 @@ export const News: CollectionConfig = {
         beforeValidate: [
             ({ data, operation }) => {
                 if ((operation === "create" || operation === "update") && data?.title) {
-                    data.slug = data.title
+                    data.id = data.title
                         .trim()
                         .replace(/\s+/g, "-")
                         .replace(/[^\w-]+/g, "")
@@ -25,7 +25,7 @@ export const News: CollectionConfig = {
     },
     fields: [
         {
-            name: "slug",
+            name: "id",
             label: "Slug",
             type: "text",
             admin: {
@@ -47,7 +47,7 @@ export const News: CollectionConfig = {
         {
             name: "fullContent",
             label: "Full Content",
-            type: "textarea",
+            type: "richText",
             required: false,
         },
         {

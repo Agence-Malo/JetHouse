@@ -150,8 +150,7 @@ export interface Jet {
  * via the `definition` "categories".
  */
 export interface Category {
-  id: number;
-  slug: string;
+  id: string;
   name: string;
   updatedAt: string;
   createdAt: string;
@@ -161,14 +160,27 @@ export interface Category {
  * via the `definition` "news".
  */
 export interface News {
-  id: number;
-  slug: string;
+  id: string;
   title: string;
   excerpt?: string | null;
-  fullContent?: string | null;
+  fullContent?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
   date: string;
   image?: (number | null) | Media;
-  category?: (number | null) | Category;
+  category?: (string | null) | Category;
   updatedAt: string;
   createdAt: string;
 }
@@ -193,11 +205,11 @@ export interface PayloadLockedDocument {
       } | null)
     | ({
         relationTo: 'categories';
-        value: number | Category;
+        value: string | Category;
       } | null)
     | ({
         relationTo: 'news';
-        value: number | News;
+        value: string | News;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -341,7 +353,7 @@ export interface JetsSelect<T extends boolean = true> {
  * via the `definition` "categories_select".
  */
 export interface CategoriesSelect<T extends boolean = true> {
-  slug?: T;
+  id?: T;
   name?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -351,7 +363,7 @@ export interface CategoriesSelect<T extends boolean = true> {
  * via the `definition` "news_select".
  */
 export interface NewsSelect<T extends boolean = true> {
-  slug?: T;
+  id?: T;
   title?: T;
   excerpt?: T;
   fullContent?: T;

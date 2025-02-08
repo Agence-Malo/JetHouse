@@ -14,7 +14,7 @@ export const Category: CollectionConfig = {
             ({ data, operation }) => {
 
                 if ((operation === "create" || operation === "update") && data?.name) {
-                    data.slug = data.name
+                    data.id = data.name
                         .trim()
                         .replace(/\s+/g, "-")
                         .replace(/[^\w-]+/g, "")
@@ -26,7 +26,7 @@ export const Category: CollectionConfig = {
     },
     fields: [
         {
-            name: "slug",
+            name: "id",
             label: "Slug",
             type: "text",
             admin: {

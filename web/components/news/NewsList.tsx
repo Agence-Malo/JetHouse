@@ -13,7 +13,6 @@ interface NewsListProps {
 
 interface NewsDoc {
     id: number;
-    slug: string;
     title: string;
     excerpt?: string;
     image?: {
@@ -25,7 +24,6 @@ interface NewsDoc {
     category?: {
         id: number;
         name: string;
-        slug: string;
     } | null;
 }
 
@@ -61,7 +59,7 @@ export default function NewsList({ selectedYear, selectedMonth, selectedCategory
         }
 
         if (selectedCategory) {
-            params.append("where[category.slug][equals]", selectedCategory);
+            params.append("where[category.id][equals]", selectedCategory);
         }
 
         return `${baseUrl}/api/news?${params.toString()}`;
@@ -117,7 +115,7 @@ export default function NewsList({ selectedYear, selectedMonth, selectedCategory
                         category={item.category?.name || ""}
                         title={item.title}
                         description={item.excerpt || ""}
-                        articleLink={`/news/${item.slug}`}
+                        articleLink={`/news/${item.id}`}
                     />
                 );
             })}

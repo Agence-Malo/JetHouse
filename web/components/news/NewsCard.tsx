@@ -40,8 +40,8 @@ export default function NewsCard({
             <div className="flex flex-col justify-start gap-3">
                 {category && (
                     <span className="uppercase text-xs text-blue-950 font-light tracking-wider">
-            {category}
-          </span>
+                        {category}
+                    </span>
                 )}
 
                 <h3 className="text-blue-950 text-lg 2xl:text-xl font-bold leading-tight max-w-[60ch]">
@@ -51,7 +51,7 @@ export default function NewsCard({
                     {description}
                 </p>
                 <Link
-                    href={articleLink}
+                    href={`/news/${articleLink}`}
                     className="text-gray-400 underline uppercase underline-offset-4 text-sm font-medium hover:opacity-70 transition-opacity duration-200 ease-in-out"
                 >
                     Read Article

@@ -11,7 +11,6 @@ import placeholder from "@/public/Images/About us/malta.png";
 
 interface NewsArticle {
     id: number;
-    slug: string;
     title: string;
     publicationDate?: string;
     image?: {
@@ -29,7 +28,7 @@ interface NewsResponse {
 }
 
 const SingleArticlePage = () => {
-    const { slug } = useParams();
+    const { id } = useParams();
     const [article, setArticle] = useState<NewsArticle | null>(null);
     const [otherArticles, setOtherArticles] = useState<NewsArticle[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -38,7 +37,7 @@ const SingleArticlePage = () => {
     const baseUrl = process.env.NEXT_PUBLIC_PAYLOAD_URL || "";
 
     useEffect(() => {
-        if (!slug) return;
+        if (!id) return;
 
         const fetchArticleData = async () => {
             try {
@@ -47,7 +46,7 @@ const SingleArticlePage = () => {
 
                 const articleRes = await axios.get<NewsResponse>(`${baseUrl}/api/news`, {
                     params: {
-                        "where[slug][equals]": slug,
+                        "where[id][equals]": id,
                         depth: 1,
                         "select[title]": true,
                         "select[publicationDate]": true,
@@ -65,14 +64,12 @@ const SingleArticlePage = () => {
 
                 setArticle(articleRes.data.docs[0]);
 
-
                 const otherRes = await axios.get<NewsResponse>(`${baseUrl}/api/news`, {
                     params: {
-                        "where[slug][not_equals]": slug,
+                        "where[id][not_equals]": id,
                         limit: 3,
                         depth: 1,
                         "select[id]": true,
-                        "select[slug]": true,
                         "select[title]": true,
                         "select[publicationDate]": true,
                         "select[image]": true,
@@ -89,7 +86,7 @@ const SingleArticlePage = () => {
         };
 
         fetchArticleData();
-    }, [slug, baseUrl]);
+    }, [id, baseUrl]);
 
     if (isLoading) {
         return (
@@ -192,7 +189,7 @@ const SingleArticlePage = () => {
                                     {item.title}
                                 </h3>
                                 <Link
-                                    href={`/news/${item.slug}`}
+                                    href={`/news/${item.id}`}
                                     className="text-blue-950 underline text-sm mt-2 hover:opacity-70 w-fit"
                                 >
                                     Read Article
