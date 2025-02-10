@@ -39,7 +39,11 @@
 
   .glass-button {
     @apply uppercase text-sm border-[0.1vh] lg:px-[1vw] px-[4vw] py-[1.5vh] tracking-wider hover:bg-blue-900/50 hover:border-blue-950 backdrop-blur-2xl bg-white/10 rounded-none hover:text-white;
-    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, color 0.2s ease-in-out, transform 0.2s ease-in-out;
+    transition:
+      background-color 0.2s ease-in-out,
+      border-color 0.2s ease-in-out,
+      color 0.2s ease-in-out,
+      transform 0.2s ease-in-out;
   }
 
   .glass-button-light {
@@ -94,7 +98,7 @@
     border-radius: 50%;
     display: flex;
     align-items: center;
-    content: '';
+    content: "";
   }
   .embla__dot--selected:after {
     box-shadow: inset 0 0 0 0.2rem black;
@@ -113,7 +117,7 @@
   .connect-link label {
     @apply cursor-pointer;
     font-size: 0.6rem;
-    line-height: 0.75rem
+    line-height: 0.75rem;
   }
 }
 
@@ -163,13 +167,13 @@
 .fade-animation {
   animation: fade 1s ease-in-out;
   animation-delay: 2s;
-    animation-fill-mode: backwards;
+  animation-fill-mode: backwards;
 }
 
 .scale-animation {
   animation: scaleIn 500ms ease-in-out;
   animation-delay: 500ms;
-    animation-fill-mode: backwards;
+  animation-fill-mode: backwards;
 }
 
 @keyframes fade {
@@ -187,8 +191,8 @@
     scale: 0.5;
     opacity: 0;
   }
-    100% {
-        scale: 1;
-        opacity: 1;
-    }
+  100% {
+    scale: 1;
+    opacity: 1;
+  }
 }
