@@ -42,20 +42,20 @@ export const News: CollectionConfig = {
       name: 'excerpt',
       label: 'Excerpt',
       type: 'textarea',
-      required: false,
+      required: true,
     },
     {
       name: 'fullContent',
       label: 'Full Content',
       type: 'richText',
-      required: false,
+      required: true,
     },
     {
       name: 'image',
       label: 'Main Image',
       type: 'upload',
       relationTo: 'media',
-      required: false,
+      required: true,
     },
     {
       name: 'category',

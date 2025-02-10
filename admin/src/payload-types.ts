@@ -162,8 +162,8 @@ export interface Category {
 export interface News {
   id: string;
   title: string;
-  excerpt?: string | null;
-  fullContent?: {
+  excerpt: string;
+  fullContent: {
     root: {
       type: string;
       children: {
@@ -177,8 +177,8 @@ export interface News {
       version: number;
     };
     [k: string]: unknown;
-  } | null;
-  image?: (number | null) | Media;
+  };
+  image: number | Media;
   category?: (string | null) | Category;
   updatedAt: string;
   createdAt: string;
