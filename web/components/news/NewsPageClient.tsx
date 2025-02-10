@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
+import axios from "axios";
 import { Navbar } from "@/components/nav";
 import NewsHero from "@/components/news/Hero";
 import NewsList from "@/components/news/NewsList";
@@ -15,6 +16,47 @@ export default function NewsPageClient() {
     const [selectedYear, setSelectedYear] = useState<number | null>(null);
     const [selectedMonth, setSelectedMonth] = useState<number | null>(null);
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+    const [availableMonths, setAvailableMonths] = useState<{ [year: number]: number[] }>({});
+
+    const baseUrl = process.env.NEXT_PUBLIC_PAYLOAD_URL || "";
+
+    const fetchAvailableMonths = async () => {
+        try {
+            const res = await axios.get(`${baseUrl}/api/news`, {
+                params: {
+                    "select[createdAt]": true,
+                    depth: 0,
+                    limit: 1000,
+                },
+                headers: { "Content-Type": "application/json" },
+            });
+
+            const articles = res.data.docs;
+            const monthsMap: { [year: number]: number[] } = {};
+
+            articles.forEach((article: { createdAt: string }) => {
+                const date = new Date(article.createdAt);
+                const year = date.getUTCFullYear();
+                const month = date.getUTCMonth();
+
+                if (!monthsMap[year]) {
+                    monthsMap[year] = [];
+                }
+                if (!monthsMap[year].includes(month)) {
+                    monthsMap[year].push(month);
+                }
+            });
+
+            // Встановлюємо доступні місяці у стан
+            setAvailableMonths(monthsMap);
+        } catch (error) {
+            console.error("Failed to fetch available months:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchAvailableMonths();
+    }, []);
 
     const handleMonthSelect = (year: number, monthIndex: number) => {
         setSelectedYear(year);
@@ -35,11 +77,18 @@ export default function NewsPageClient() {
 
             <section className="containerize flex flex-col-reverse lg:flex-row items-stretch justify-between gap-8 py-8">
                 <div className="w-full lg:w-[60%] flex flex-col gap-8">
-                    <NewsList selectedYear={selectedYear} selectedMonth={selectedMonth} selectedCategory={selectedCategory} />
+                    <NewsList
+                        selectedYear={selectedYear}
+                        selectedMonth={selectedMonth}
+                        selectedCategory={selectedCategory}
+                    />
                 </div>
 
                 <div className="w-full lg:w-[30%] border-l border-blue-950 pl-4">
-                    <NewsAccordion onMonthSelect={handleMonthSelect} />
+                    <NewsAccordion
+                        availableMonths={availableMonths}
+                        onMonthSelect={handleMonthSelect}
+                    />
                 </div>
             </section>
 

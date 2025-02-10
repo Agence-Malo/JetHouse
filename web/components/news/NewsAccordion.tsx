@@ -14,35 +14,12 @@ const ChevronIcon = () => (
     </svg>
 );
 
-const yearsData = [
-    {
-        year: 2025,
-        months: ["January", "February"],
-    },
-    {
-        year: 2024,
-        months: [
-            "January",
-            "February",
-            "March",
-            "April",
-            "May",
-            "June",
-            "July",
-            "August",
-            "September",
-            "October",
-            "November",
-            "December",
-        ],
-    },
-];
-
 interface NewsAccordionProps {
+    availableMonths: { [year: number]: number[] };
     onMonthSelect?: (year: number, monthIndex: number) => void;
 }
 
-const NewsAccordion: React.FC<NewsAccordionProps> = ({ onMonthSelect }) => {
+const NewsAccordion: React.FC<NewsAccordionProps> = ({ availableMonths, onMonthSelect }) => {
     const [expandedKeys, setExpandedKeys] = useState<Selection>(new Set());
     const [activeSelection, setActiveSelection] = useState<{ year: number; monthIndex: number } | null>(null);
 
@@ -60,40 +37,36 @@ const NewsAccordion: React.FC<NewsAccordionProps> = ({ onMonthSelect }) => {
     return (
         <aside className="flex flex-col gap-4">
             <Accordion variant="light" selectedKeys={expandedKeys} onSelectionChange={onChange}>
-                {yearsData.map((item) => {
-                    const keyStr = String(item.year);
-                    return (
-                        <AccordionItem
-                            key={keyStr}
-                            aria-label={`Year ${item.year}`}
-                            className="text-blue-950"
-                            indicator={() => <ChevronIcon />}
-                            title={
-                                <h4 className="font-normal text-blue-950 normal-case">
-                                    {item.year}
-                                </h4>
-                            }
-                        >
-                            <ul className="pl-2">
-                                {item.months.map((month, index) => {
-                                    const isActive =
-                                        activeSelection?.year === item.year && activeSelection?.monthIndex === index;
-                                    return (
-                                        <li
-                                            key={month}
-                                            className={`text-blue-950 text-sm py-1 cursor-pointer hover:underline ${
-                                                isActive ? "font-bold" : "font-normal"
-                                            }`}
-                                            onClick={() => handleMonthClick(item.year, index)}
-                                        >
-                                            {month}
-                                        </li>
-                                    );
-                                })}
-                            </ul>
-                        </AccordionItem>
-                    );
-                })}
+                {Object.entries(availableMonths).map(([year, months]) => (
+                    <AccordionItem
+                        key={year}
+                        aria-label={`Year ${year}`}
+                        className="text-blue-950"
+                        indicator={() => <ChevronIcon />}
+                        title={<h4 className="font-normal text-blue-950 normal-case">{year}</h4>}
+                    >
+                        <ul className="pl-2">
+                            {months.map((monthIndex) => {
+                                const isActive =
+                                    activeSelection?.year === Number(year) &&
+                                    activeSelection?.monthIndex === monthIndex;
+                                return (
+                                    <li
+                                        key={monthIndex}
+                                        className={`text-blue-950 text-sm py-1 cursor-pointer hover:underline ${
+                                            isActive ? "font-bold" : "font-normal"
+                                        }`}
+                                        onClick={() => handleMonthClick(Number(year), monthIndex)}
+                                    >
+                                        {new Date(2000, monthIndex).toLocaleString("en-US", {
+                                            month: "long",
+                                        })}
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                    </AccordionItem>
+                ))}
             </Accordion>
         </aside>
     );
