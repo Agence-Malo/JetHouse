@@ -51,7 +51,7 @@ export default function NewsCard({
                     {description}
                 </p>
                 <Link
-                    href={`/news/${articleLink}`}
+                    href={articleLink}
                     className="text-gray-400 underline uppercase underline-offset-4 text-sm font-medium hover:opacity-70 transition-opacity duration-200 ease-in-out"
                 >
                     Read Article

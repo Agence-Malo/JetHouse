@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import {JSX, useEffect, useState} from "react";
+import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import axios from "axios";
@@ -17,7 +17,7 @@ interface NewsArticle {
         url?: string;
         alt?: string;
     };
-    fullContent?: string;
+    fullContent?: any;
     category?: {
         name: string;
     };
@@ -27,8 +27,28 @@ interface NewsResponse {
     docs: NewsArticle[];
 }
 
+const renderLexicalContent = (content: any): JSX.Element | null => {
+    if (!content || !content.root) return null;
+
+    const renderNode = (node: any, index: number): JSX.Element | null => {
+        if (node.type === "heading") {
+            return <h1 key={index} className="text-2xl font-bold">{node.children?.map(renderNode)}</h1>;
+        }
+        if (node.type === "paragraph") {
+            return <p key={index} className="mb-4">{node.children?.map(renderNode)}</p>;
+        }
+        if (node.type === "text") {
+            return <span key={index} className={node.format === "bold" ? "font-bold" : ""}>{node.text}</span>;
+        }
+        return null;
+    };
+
+    return <div>{content.root.children.map(renderNode)}</div>;
+};
+
 const SingleArticlePage = () => {
-    const { id } = useParams();
+    const searchParams = useSearchParams();
+    const id = searchParams.get("id");
     const [article, setArticle] = useState<NewsArticle | null>(null);
     const [otherArticles, setOtherArticles] = useState<NewsArticle[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -151,7 +171,9 @@ const SingleArticlePage = () => {
                 </div>
 
                 <div className="max-w-3xl mx-auto text-blue-950 text-base md:text-lg leading-relaxed space-y-4">
-                    {article?.fullContent || "No content available."}
+                    {article?.fullContent && typeof article.fullContent === "object"
+                        ? renderLexicalContent(article.fullContent)
+                        : "No content available."}
                 </div>
             </div>
 

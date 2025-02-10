@@ -115,7 +115,7 @@ export default function NewsList({ selectedYear, selectedMonth, selectedCategory
                         category={item.category?.name || ""}
                         title={item.title}
                         description={item.excerpt || ""}
-                        articleLink={`/news/${item.id}`}
+                        articleLink={`/news/article?id=${item.id}`}
                     />
                 );
             })}
