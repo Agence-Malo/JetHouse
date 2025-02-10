@@ -51,12 +51,6 @@ export const News: CollectionConfig = {
             required: false,
         },
         {
-            name: "date",
-            label: "Publication Date",
-            type: "date",
-            required: true,
-        },
-        {
             name: "image",
             label: "Main Image",
             type: "upload",

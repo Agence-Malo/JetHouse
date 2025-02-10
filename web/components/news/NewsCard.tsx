@@ -9,6 +9,7 @@ interface INewsCardProps {
     title: string;
     description: string;
     articleLink: string;
+    createdAt?: string
 }
 
 export default function NewsCard({
@@ -17,6 +18,7 @@ export default function NewsCard({
                                      title,
                                      description,
                                      articleLink,
+                                     createdAt,
                                  }: INewsCardProps) {
     const baseUrl = process.env.NEXT_PUBLIC_PAYLOAD_URL || "";
     const finalImageSrc =
@@ -25,6 +27,14 @@ export default function NewsCard({
                 ? imageSrc
                 : `${baseUrl}${imageSrc}`
             : imageSrc;
+
+    const formattedDate = createdAt
+        ? new Date(createdAt).toLocaleDateString("en-US", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+        }).toUpperCase()
+        : null;
 
     return (
         <article className="flex flex-row items-start gap-4">
@@ -47,6 +57,11 @@ export default function NewsCard({
                 <h3 className="text-blue-950 text-lg 2xl:text-xl font-bold leading-tight max-w-[60ch]">
                     {title}
                 </h3>
+
+                {/*{formattedDate && (*/}
+                {/*    <span className="text-sm text-gray-500">{formattedDate}</span>*/}
+                {/*)}*/}
+
                 <p className="text-blue-950 text-sm 2xl:text-md font-normal leading-relaxed max-w-[60ch]">
                     {description}
                 </p>

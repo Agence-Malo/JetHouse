@@ -14,6 +14,7 @@ interface NewsListProps {
 interface NewsDoc {
     id: number;
     title: string;
+    createdAt: string;
     excerpt?: string;
     image?: {
         url?: string;
@@ -44,18 +45,14 @@ export default function NewsList({ selectedYear, selectedMonth, selectedCategory
     const queryUrl = useMemo(() => {
         const params = new URLSearchParams();
         params.append("limit", String(visibleCount));
-        params.append("sort", "-date");
+        params.append("sort", "-createdAt");
         params.append("depth", "1");
 
         if (selectedYear != null && selectedMonth != null) {
-            const startDate = new Date(selectedYear, selectedMonth, 1)
-                .toISOString()
-                .split("T")[0];
-            const endDate = new Date(selectedYear, selectedMonth + 1, 0)
-                .toISOString()
-                .split("T")[0];
-            params.append("where[date][greater_than_or_equal]", startDate);
-            params.append("where[date][less_than_or_equal]", endDate);
+            const startDate = new Date(Date.UTC(selectedYear, selectedMonth, 1)).toISOString();
+            const endDate = new Date(Date.UTC(selectedYear, selectedMonth + 1, 0, 23, 59, 59)).toISOString();
+            params.append("where[createdAt][greater_than_or_equal]", startDate);
+            params.append("where[createdAt][less_than_or_equal]", endDate);
         }
 
         if (selectedCategory) {
@@ -104,9 +101,7 @@ export default function NewsList({ selectedYear, selectedMonth, selectedCategory
     return (
         <section className="w-full flex flex-col gap-8">
             {newsArticles.map((item) => {
-                const imageSrc = item.image?.url
-                    ? `${baseUrl}${item.image.url}`
-                    : placeholder;
+                const imageSrc = item.image?.url ? `${baseUrl}${item.image.url}` : placeholder;
 
                 return (
                     <NewsCard
@@ -116,6 +111,7 @@ export default function NewsList({ selectedYear, selectedMonth, selectedCategory
                         title={item.title}
                         description={item.excerpt || ""}
                         articleLink={`/news/article?id=${item.id}`}
+                        createdAt={item.createdAt}
                     />
                 );
             })}

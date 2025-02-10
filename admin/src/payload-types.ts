@@ -178,7 +178,6 @@ export interface News {
     };
     [k: string]: unknown;
   } | null;
-  date: string;
   image?: (number | null) | Media;
   category?: (string | null) | Category;
   updatedAt: string;
@@ -367,7 +366,6 @@ export interface NewsSelect<T extends boolean = true> {
   title?: T;
   excerpt?: T;
   fullContent?: T;
-  date?: T;
   image?: T;
   category?: T;
   updatedAt?: T;

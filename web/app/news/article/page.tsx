@@ -12,7 +12,7 @@ import placeholder from "@/public/Images/About us/malta.png";
 interface NewsArticle {
     id: number;
     title: string;
-    publicationDate?: string;
+    createdAt: string;
     image?: {
         url?: string;
         alt?: string;
@@ -27,6 +27,7 @@ interface NewsResponse {
     docs: NewsArticle[];
 }
 
+// Функція для рендерингу RichText контенту
 const renderLexicalContent = (content: any): JSX.Element | null => {
     if (!content || !content.root || !content.root.children) {
         return <p className="text-gray-500">No content available.</p>;
@@ -120,7 +121,7 @@ const SingleArticlePage = () => {
                         "where[id][equals]": id,
                         depth: 1,
                         "select[title]": true,
-                        "select[publicationDate]": true,
+                        "select[createdAt]": true,
                         "select[image]": true,
                         "select[fullContent]": true,
                         "select[category.name]": true,
@@ -142,7 +143,7 @@ const SingleArticlePage = () => {
                         depth: 1,
                         "select[id]": true,
                         "select[title]": true,
-                        "select[publicationDate]": true,
+                        "select[createdAt]": true,
                         "select[image]": true,
                     },
                     headers: { "Content-Type": "application/json" },
@@ -195,7 +196,13 @@ const SingleArticlePage = () => {
                 </h1>
 
                 <div className="mb-4 text-sm text-gray-600 uppercase">
-                    {article?.publicationDate || "DATE UNKNOWN"}
+                    {article?.createdAt
+                        ? new Date(article.createdAt).toLocaleDateString("en-US", {
+                            day: "numeric",
+                            month: "short",
+                            year: "numeric",
+                        }).toUpperCase()
+                        : "DATE UNKNOWN"}
                 </div>
 
                 <div className="relative w-full h-[350px] md:h-[500px] mb-10">
