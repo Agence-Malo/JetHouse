@@ -39,15 +39,27 @@ const Footer = () => {
         >
           <Link
             href={"/"}
-            className={`uppercase text-sm tracking-wider ${path === "/" ? "font-bold" : "font-normal"}`}
+            className={`uppercase text-sm tracking-wider ${
+              path === "/" ? "font-bold" : "font-normal"
+            }`}
           >
             Home
           </Link>
           <Link
             href={"/about"}
-            className={`uppercase text-sm tracking-wider ${path === "/about" ? "font-bold" : "font-normal"}`}
+            className={`uppercase text-sm tracking-wider ${
+              path === "/about" ? "font-bold" : "font-normal"
+            }`}
           >
             About Us
+          </Link>
+          <Link
+            href={"/news"}
+            className={`uppercase text-sm tracking-wider ${
+              path === "/news" ? "font-bold" : "font-normal"
+            }`}
+          >
+            News
           </Link>
           <button
             onClick={(e) => {
