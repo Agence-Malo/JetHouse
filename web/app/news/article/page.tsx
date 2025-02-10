@@ -1,6 +1,6 @@
 "use client";
 
-import {JSX, useEffect, useState} from "react";
+import { JSX, Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,7 +10,7 @@ import Footer from "@/components/footer";
 import placeholder from "@/public/Images/About us/malta.png";
 
 interface NewsArticle {
-    id: number;
+    id: string;
     title: string;
     createdAt: string;
     image?: {
@@ -27,9 +27,8 @@ interface NewsResponse {
     docs: NewsArticle[];
 }
 
-// Функція для рендерингу RichText контенту
 const renderLexicalContent = (content: any): JSX.Element | null => {
-    if (!content || !content.root || !content.root.children) {
+    if (!content || !content.root || !Array.isArray(content.root.children) || content.root.children.length === 0) {
         return <p className="text-gray-500">No content available.</p>;
     }
 
@@ -99,14 +98,26 @@ const renderLexicalContent = (content: any): JSX.Element | null => {
 };
 
 const SingleArticlePage = () => {
+    return (
+        <Suspense fallback={<p className="text-center">Loading...</p>}>
+            <SingleArticleContent />
+        </Suspense>
+    );
+};
+
+const SingleArticleContent = () => {
     const searchParams = useSearchParams();
-    const id = searchParams.get("id");
+    const [id, setId] = useState<string | null>(null);
     const [article, setArticle] = useState<NewsArticle | null>(null);
     const [otherArticles, setOtherArticles] = useState<NewsArticle[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [errorMsg, setErrorMsg] = useState<string>("");
 
     const baseUrl = process.env.NEXT_PUBLIC_PAYLOAD_URL || "";
+
+    useEffect(() => {
+        setId(searchParams.get("id"));
+    }, [searchParams]);
 
     useEffect(() => {
         if (!id) return;
