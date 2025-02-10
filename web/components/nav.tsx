@@ -6,7 +6,7 @@ import logo from "@/public/graphics/images/logo-white.png";
 import { FullLogo } from "@/public/graphics/images/logo";
 import Image from "next/image";
 import Link from "next/link";
-import { Accordion, AccordionItem, Tooltip } from "@nextui-org/react";
+import { Accordion, AccordionItem } from "@nextui-org/react";
 import { motion } from "framer-motion";
 import { usePathname } from "next/navigation";
 import IJet from "@/types/jet";
@@ -159,6 +159,13 @@ const Nav = ({ fleet }: { fleet: null | Pick<IJet, "id" | "name">[] }) => {
             About Us
           </Link>
           <Link
+            href={"/news"}
+            onClick={() => openView(null)}
+            className={`${path === "/news" && "font-bold"} hover:font-bold [transition:_font-weight_0.2s_ease-in-out]`}
+          >
+            News
+          </Link>
+          <Link
             href={"/about/#board"}
             onClick={() => openView(null)}
             className={`${path === "/team" && "font-bold"} hover:font-bold [transition:_font-weight_0.2s_ease-in-out]`}
@@ -211,22 +218,29 @@ export const Navbar = ({ invert }: { invert: number }) => {
     { openView } = useView();
 
   useEffect(() => {
-    const handleScroll = () => {
+    function handleScroll() {
+      if (invert < 0) {
+        scroll(true);
+        return;
+      }
+
       const position = window.scrollY;
-      const threshold = invert;
-      if (position > threshold) scroll(true);
-      else if (position <= threshold) scroll(false);
-    };
+      if (position > invert) scroll(true);
+      else scroll(false);
+    }
+
+    handleScroll();
 
     window.addEventListener("scroll", handleScroll);
-
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [scrolled]);
+  }, [invert]);
 
   return (
     <>
       <div
-        className={`fixed top-0 w-full h-[12vh] bg-gradient-to-b from-white ${scrolled ? "opacity-100" : "opacity-0"} transition-opacity duration-200 ease-in-out`}
+        className={`fixed top-0 w-full h-[12vh] bg-gradient-to-b from-white ${
+          scrolled ? "opacity-100" : "opacity-0"
+        } transition-opacity duration-200 ease-in-out`}
       />
       <section
         className={`fixed z-30 containerize pt-[2vh] flex justify-between items-center`}
@@ -234,7 +248,9 @@ export const Navbar = ({ invert }: { invert: number }) => {
         <div className={"w-1/3 flex justify-start items-center"}>
           <button
             onClick={() => openView("nav")}
-            className={`flex justify-center items-center flex-col lg:w-[2vw] w-[6vw] group gap-[0.5vh] lg:hover:gap-[0.75vh] transition-[gap] duration-200 ease-in-out ${scrolled ? "fill-black" : "fill-white"}`}
+            className={`flex justify-center items-center flex-col lg:w-[2vw] w-[6vw] group gap-[0.5vh] lg:hover:gap-[0.75vh] transition-[gap] duration-200 ease-in-out ${
+              scrolled ? "fill-black" : "fill-white"
+            }`}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -270,7 +286,9 @@ export const Navbar = ({ invert }: { invert: number }) => {
           <button
             type={"button"}
             onClick={() => openView("contact")}
-            className={`glass-button hover:backdrop-blur-2xl ${scrolled ? "glass-button-dark" : "glass-button-light"}`}
+            className={`glass-button hover:backdrop-blur-2xl ${
+              scrolled ? "glass-button-dark" : "glass-button-light"
+            }`}
           >
             <span className={"lg:hidden block uppercase"}>Contact</span>
             <span className={"hidden lg:block"}>Get in touch</span>
