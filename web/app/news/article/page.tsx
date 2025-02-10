@@ -28,19 +28,70 @@ interface NewsResponse {
 }
 
 const renderLexicalContent = (content: any): JSX.Element | null => {
-    if (!content || !content.root) return null;
+    if (!content || !content.root || !content.root.children) {
+        return <p className="text-gray-500">No content available.</p>;
+    }
 
     const renderNode = (node: any, index: number): JSX.Element | null => {
-        if (node.type === "heading") {
-            return <h1 key={index} className="text-2xl font-bold">{node.children?.map(renderNode)}</h1>;
+        if (!node) return null;
+
+        switch (node.type) {
+            case "heading":
+                return <h1 key={index} className="text-3xl font-bold my-4">{node.children?.map(renderLeaf)}</h1>;
+            case "paragraph":
+                return <p key={index} className="mb-4">{node.children?.map(renderLeaf)}</p>;
+            case "blockquote":
+                return (
+                    <blockquote key={index} className="border-l-4 border-gray-400 pl-4 italic my-4">
+                        {node.children?.map(renderLeaf)}
+                    </blockquote>
+                );
+            case "ul":
+                return <ul key={index} className="list-disc ml-6">{node.children?.map(renderNode)}</ul>;
+            case "ol":
+                return <ol key={index} className="list-decimal ml-6">{node.children?.map(renderNode)}</ol>;
+            case "li":
+                return <li key={index}>{node.children?.map(renderLeaf)}</li>;
+            case "link":
+                return (
+                    <a
+                        key={index}
+                        className="underline text-blue-600 hover:text-blue-800"
+                        href={node.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        {node.children?.map(renderLeaf)}
+                    </a>
+                );
+            case "upload":
+                return (
+                    <Image
+                        key={index}
+                        src={encodeURI(node.value.url)}
+                        alt={node.value.alt || ""}
+                        width={800}
+                        height={400}
+                        className="w-full object-cover my-4 rounded-lg"
+                    />
+                );
+            default:
+                return null;
         }
-        if (node.type === "paragraph") {
-            return <p key={index} className="mb-4">{node.children?.map(renderNode)}</p>;
-        }
-        if (node.type === "text") {
-            return <span key={index} className={node.format === "bold" ? "font-bold" : ""}>{node.text}</span>;
-        }
-        return null;
+    };
+
+    const renderLeaf = (leaf: any, index?: number) => {
+        if (!leaf.text) return null;
+        return (
+            <span
+                key={index}
+                className={`${leaf.bold ? "font-bold" : ""} ${leaf.italic ? "italic" : ""} ${
+                    leaf.underline ? "underline" : ""
+                } ${leaf.strikethrough ? "line-through" : ""}`}
+            >
+                {leaf.text}
+            </span>
+        );
     };
 
     return <div>{content.root.children.map(renderNode)}</div>;
@@ -128,22 +179,6 @@ const SingleArticlePage = () => {
         );
     }
 
-    const formattedDate =
-        article?.publicationDate && !isNaN(new Date(article.publicationDate).getTime())
-            ? new Date(article.publicationDate).toLocaleDateString("en-US", {
-                day: "numeric",
-                month: "short",
-                year: "numeric",
-            }).toUpperCase()
-            : "DATE UNKNOWN";
-
-    const imageSrc =
-        article?.image?.url && article.image.url.startsWith("http")
-            ? article.image.url
-            : article?.image?.url
-                ? `${baseUrl}${article.image.url}`
-                : placeholder;
-
     return (
         <main className="w-full flex flex-col items-center">
             <Navbar invert={-20} />
@@ -159,11 +194,13 @@ const SingleArticlePage = () => {
                     {article?.title}
                 </h1>
 
-                <div className="mb-4 text-sm text-gray-600 uppercase">{formattedDate}</div>
+                <div className="mb-4 text-sm text-gray-600 uppercase">
+                    {article?.publicationDate || "DATE UNKNOWN"}
+                </div>
 
                 <div className="relative w-full h-[350px] md:h-[500px] mb-10">
                     <Image
-                        src={imageSrc}
+                        src={article?.image?.url ? `${baseUrl}${article.image.url}` : placeholder}
                         alt={article?.image?.alt || "News Image"}
                         fill
                         className="object-cover rounded-lg"
