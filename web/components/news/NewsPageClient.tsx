@@ -49,7 +49,6 @@ export default function NewsPageClient() {
         }
       });
 
-      // Встановлюємо доступні місяці у стан
       setAvailableMonths(monthsMap);
     } catch (error) {
       console.error("Failed to fetch available months:", error);
