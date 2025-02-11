@@ -5,9 +5,12 @@ import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import axios from "axios";
+import dynamic from "next/dynamic";
 import { Navbar } from "@/components/nav";
 import Footer from "@/components/footer";
 import placeholder from "@/public/Images/About us/malta.png";
+
+const View = dynamic(() => import("@/components/view"));
 
 interface NewsArticle {
   id: string;
@@ -202,6 +205,7 @@ const SingleArticleContent = () => {
     return (
       <main className="w-full flex flex-col items-center">
         <Navbar invert={-20} />
+        <View />
         <p className="text-center mt-32">Loading article...</p>
         <Footer />
       </main>
@@ -212,6 +216,7 @@ const SingleArticleContent = () => {
     return (
       <main className="w-full flex flex-col items-center">
         <Navbar invert={-20} />
+        <View />
         <p className="text-center mt-32 text-red-500">{errorMsg}</p>
         <Footer />
       </main>
@@ -221,6 +226,7 @@ const SingleArticleContent = () => {
   return (
     <main className="w-full flex flex-col items-center">
       <Navbar invert={-20} />
+      <View />
 
       <div className="w-full max-w-[1200px] py-36 px-4">
         {article?.category?.name && (
