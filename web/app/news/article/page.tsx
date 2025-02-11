@@ -301,7 +301,7 @@ const SingleArticleContent = () => {
                   {item.title}
                 </h3>
                 <Link
-                  href={`/news/${item.id}`}
+                  href={`/news/article?id=${item.id}`}
                   className="text-blue-950 underline text-sm mt-2 hover:opacity-70 w-fit"
                 >
                   Read Article
