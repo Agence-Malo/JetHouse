@@ -31,6 +31,8 @@ interface NewsResponse {
 }
 
 const renderLexicalContent = (content: any): JSX.Element | null => {
+  const baseUrl = process.env.NEXT_PUBLIC_PAYLOAD_URL || "";
+
   if (
     !content ||
     !content.root ||
@@ -39,6 +41,20 @@ const renderLexicalContent = (content: any): JSX.Element | null => {
   ) {
     return <p className="text-gray-500">No content available.</p>;
   }
+
+  const renderLeaf = (leaf: any, index?: number) => {
+    if (!leaf.text) return null;
+    return (
+      <span
+        key={index}
+        className={`${leaf.bold ? "font-bold" : ""} ${leaf.italic ? "italic" : ""} ${
+          leaf.underline ? "underline" : ""
+        } ${leaf.strikethrough ? "line-through" : ""}`}
+      >
+        {leaf.text}
+      </span>
+    );
+  };
 
   const renderNode = (node: any, index: number): JSX.Element | null => {
     if (!node) return null;
@@ -91,34 +107,27 @@ const renderLexicalContent = (content: any): JSX.Element | null => {
             {node.children?.map(renderLeaf)}
           </a>
         );
-      case "upload":
+      case "upload": {
+        let imageUrl = "";
+        if (node.value && node.value.url) {
+          imageUrl = node.value.url.startsWith("http")
+            ? node.value.url
+            : `${baseUrl}${node.value.url}`;
+        }
         return (
           <Image
             key={index}
-            src={encodeURI(node.value.url)}
+            src={encodeURI(imageUrl)}
             alt={node.value.alt || ""}
             width={800}
             height={400}
             className="w-full object-cover my-4 rounded-lg"
           />
         );
+      }
       default:
         return null;
     }
-  };
-
-  const renderLeaf = (leaf: any, index?: number) => {
-    if (!leaf.text) return null;
-    return (
-      <span
-        key={index}
-        className={`${leaf.bold ? "font-bold" : ""} ${leaf.italic ? "italic" : ""} ${
-          leaf.underline ? "underline" : ""
-        } ${leaf.strikethrough ? "line-through" : ""}`}
-      >
-        {leaf.text}
-      </span>
-    );
   };
 
   return <div>{content.root.children.map(renderNode)}</div>;
