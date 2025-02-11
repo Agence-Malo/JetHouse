@@ -79,7 +79,7 @@ const NewsHero = () => {
 
   return (
     <section
-      className="relative w-full h-[60vh] flex items-end justify-start bg-black/10 overflow-hidden cursor-pointer"
+      className="relative w-full h-[60vh] flex items-end justify-start bg-black/10 overflow-hidden cursor-pointer -z-10"
       onClick={() => {
         if (!latestNews?.id) return;
         router.push(newsLink);
@@ -98,7 +98,7 @@ const NewsHero = () => {
         <label className="block uppercase text-xs mb-2 opacity-80">
           {categoryName}
         </label>
-        <h2 className="text-xl md:text-3xl font-semibold leading-tight">
+        <h2 className="text-xl md:text-3xl font-semibold leading-tight lg:whitespace-nowrap">
           {latestNews.title}
         </h2>
       </div>

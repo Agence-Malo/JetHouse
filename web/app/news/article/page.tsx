@@ -8,6 +8,9 @@ import axios from "axios";
 import { Navbar } from "@/components/nav";
 import Footer from "@/components/footer";
 import placeholder from "@/public/Images/About us/malta.png";
+import dynamic from "next/dynamic";
+
+const View = dynamic(() => import("@/components/view"));
 
 interface NewsArticle {
   id: string;
@@ -92,7 +95,9 @@ const renderLexicalContent = (content: any): JSX.Element | null => {
         return (
           <Image
             key={index}
-            src={encodeURI(`${process.env.NEXT_PUBLIC_PAYLOAD_URL}${node.value.url}`)}
+            src={encodeURI(
+              `${process.env.NEXT_PUBLIC_PAYLOAD_URL}${node.value.url}`,
+            )}
             alt={node.value.alt || ""}
             width={800}
             height={400}
@@ -202,6 +207,7 @@ const SingleArticleContent = () => {
     return (
       <main className="w-full flex flex-col items-center">
         <Navbar invert={-20} />
+        <View />
         <p className="text-center mt-32">Loading article...</p>
         <Footer />
       </main>
@@ -212,6 +218,7 @@ const SingleArticleContent = () => {
     return (
       <main className="w-full flex flex-col items-center">
         <Navbar invert={-20} />
+        <View />
         <p className="text-center mt-32 text-red-500">{errorMsg}</p>
         <Footer />
       </main>
@@ -221,6 +228,7 @@ const SingleArticleContent = () => {
   return (
     <main className="w-full flex flex-col items-center">
       <Navbar invert={-20} />
+      <View />
 
       <div className="w-full max-w-[1200px] py-36 px-4">
         {article?.category?.name && (
@@ -301,7 +309,7 @@ const SingleArticleContent = () => {
                   {item.title}
                 </h3>
                 <Link
-                  href={`/news/${item.id}`}
+                  href={`/news/article?id=${item.id}`}
                   className="text-blue-950 underline text-sm mt-2 hover:opacity-70 w-fit"
                 >
                   Read Article

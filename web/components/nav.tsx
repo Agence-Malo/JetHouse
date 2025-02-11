@@ -118,7 +118,7 @@ const Nav = ({ fleet }: { fleet: null | Pick<IJet, "id" | "name">[] }) => {
         </div>
         <div
           className={
-            "w-full flex flex-col justify-center items-start text-5xl gap-[2vh] font-light"
+            "w-full flex flex-col justify-center items-start text-4xl gap-[2vh] font-light"
           }
         >
           <Link
@@ -135,7 +135,7 @@ const Nav = ({ fleet }: { fleet: null | Pick<IJet, "id" | "name">[] }) => {
               itemClasses={{
                 base: "w-max",
                 content: "flex flex-col justify-start items-start gap-4 mt-2",
-                title: `${path === "/fleet" ? "font-bold" : "font-light"} hover:font-bold [transition:_font-weight_0.2s_ease-in-out] text-5xl text-white -my-4`,
+                title: `${path === "/fleet" ? "font-bold" : "font-light"} hover:font-bold [transition:_font-weight_0.2s_ease-in-out] text-4xl text-white -my-4`,
               }}
             >
               <AccordionItem title={"Our Fleet"} className={"-mx-2"}>
@@ -143,7 +143,7 @@ const Nav = ({ fleet }: { fleet: null | Pick<IJet, "id" | "name">[] }) => {
                   <Link
                     href={`/fleet?id=${jet.id}`}
                     key={jet.id}
-                    className={"text-2xl ml-[2vw]"}
+                    className={"text-xl ml-[2vw]"}
                   >
                     {jet.name}
                   </Link>
