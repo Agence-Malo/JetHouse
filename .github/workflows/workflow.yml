@@ -1,0 +1,39 @@
+name: Build and deploy to FTP
+on:
+  push:
+    branches:
+      - main
+  repository_dispatch:
+    types: [content-update]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24.4.0"
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./web
+
+      - name: Build application
+        run: npm run build
+        working-directory: ./web
+        env:
+          NEXT_PUBLIC_PAYLOAD_URL: ${{secrets.NEXT_PUBLIC_PAYLOAD_URL}}
+
+      - name: Deploy to FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{secrets.FTP_SERVER}}
+          username: ${{secrets.FTP_USERNAME}}
+          password: ${{secrets.FTP_PASSWORD}}
+          local-dir: ./web/out/
+          server-dir: ${{secrets.FTP_SERVER_DIR}}
+          dangerous-clean-slate: true

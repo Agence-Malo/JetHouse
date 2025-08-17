@@ -74,7 +74,7 @@ const NewsHero = () => {
   const imageSrc = latestNews.image?.url
     ? `${baseUrl}${latestNews.image.url}`
     : placeholder;
-  const newsLink = `/news/article?id=${latestNews.id}`;
+  const newsLink = `/news/${latestNews.id}`;
   const categoryName = latestNews.category?.name || "Uncategorized";
 
   return (

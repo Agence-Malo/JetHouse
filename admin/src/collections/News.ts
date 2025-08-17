@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import GitHubActionsTrigger from '@/hooks/GitHub-Actions-trigger'
 
 export const News: CollectionConfig = {
   slug: 'news',
@@ -22,6 +23,8 @@ export const News: CollectionConfig = {
         return data
       },
     ],
+    afterChange: [GitHubActionsTrigger],
+    afterDelete: [GitHubActionsTrigger],
   },
   fields: [
     {

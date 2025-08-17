@@ -120,7 +120,7 @@ export default function NewsList({
             category={item.category?.name || ""}
             title={item.title}
             description={item.excerpt || ""}
-            articleLink={`/news/article?id=${item.id}`}
+            articleLink={`/news/${item.id}`}
             createdAt={item.createdAt}
           />
         );
