@@ -13,7 +13,6 @@ const renderLexicalContent = (content: any): JSX.Element | null => {
 
   const renderNode = (node: any, index: number): JSX.Element | null => {
     if (!node) return null;
-
     switch (node.type) {
       case "heading":
         return (
@@ -36,20 +35,23 @@ const renderLexicalContent = (content: any): JSX.Element | null => {
             {node.children?.map(renderLeaf)}
           </blockquote>
         );
-      case "ul":
-        return (
-          <ul key={index} className="list-disc ml-6">
-            {node.children?.map(renderNode)}
-          </ul>
-        );
-      case "ol":
-        return (
-          <ol key={index} className="list-decimal ml-6">
-            {node.children?.map(renderNode)}
-          </ol>
-        );
-      case "li":
-        return <li key={index}>{node.children?.map(renderLeaf)}</li>;
+      case "list":
+        switch (node.tag) {
+          case "ul":
+            return (
+              <ul key={index} className="list-disc ml-6">
+                {node.children?.map(renderLeaf)}
+              </ul>
+            );
+          case "ol":
+            return (
+              <ol key={index} className="list-decimal ml-6">
+                {node.children?.map(renderLeaf)}
+              </ol>
+            );
+          default:
+            return null;
+        }
       case "link":
         return (
           <a
@@ -81,17 +83,38 @@ const renderLexicalContent = (content: any): JSX.Element | null => {
   };
 
   const renderLeaf = (leaf: any, index?: number) => {
-    if (!leaf.text) return null;
-    return (
-      <span
-        key={index}
-        className={`${leaf.bold ? "font-bold" : ""} ${leaf.italic ? "italic" : ""} ${
-          leaf.underline ? "underline" : ""
-        } ${leaf.strikethrough ? "line-through" : ""}`}
-      >
-        {leaf.text}
-      </span>
-    );
+    switch (leaf.type) {
+      case "text":
+        return (
+          <span
+            key={index}
+            className={`${leaf.bold ? "font-bold" : ""} ${leaf.italic ? "italic" : ""} ${
+              leaf.underline ? "underline" : ""
+            } ${leaf.strikethrough ? "line-through" : ""}`}
+          >
+            {leaf.text}
+          </span>
+        );
+      case "link":
+        return (
+          <a
+            href={leaf.fields.url}
+            target={leaf.fields.newTab ? "_blank" : "_self"}
+            className={"underline text-blue-600 hover:text-blue-800"}
+          >
+            {leaf.children.map(renderLeaf)}
+          </a>
+        );
+      case "listitem":
+        console.log(leaf.children);
+        return (
+          <li key={index}>
+            <p>{leaf.children?.map(renderLeaf)}</p>
+          </li>
+        );
+      default:
+        return null;
+    }
   };
 
   return <div>{content.root.children.map(renderNode)}</div>;
