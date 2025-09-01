@@ -1,8 +1,8 @@
 {
-  "name": "admin",
+  "name": "jethouse-admin",
   "version": "1.0.0",
-  "license": "MIT",
   "type": "module",
+  "private": true,
   "scripts": {
     "build": "cross-env NODE_OPTIONS=--no-deprecation next build",
     "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",

@@ -4,6 +4,10 @@ import { useView } from "@/context/view";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FullLogo } from "@/public/graphics/images/logo";
+import Image from "next/image";
+
+import ebaa from "@/public/graphics/images/EBAA.webp";
+import mbaa from "@/public/graphics/images/MBAA.webp";
 
 const Footer = () => {
   const path = usePathname(),
@@ -12,9 +16,14 @@ const Footer = () => {
   return (
     <footer className="containerize max-lg:px-5 flex flex-col gap-[2vh] items-center justify-center bg-blue-950 text-white py-[4vh]">
       <div className={"w-full flex justify-between items-center"}>
-        <Link href={"/"}>
-          <FullLogo mono={true} className={"fill-white h-[4vh] w-[12vh]"} />
-        </Link>
+        <div className={"flex justify-start items-center gap-[2vw]"}>
+          <Link href={"/"}>
+            <FullLogo mono={true} className={"fill-white h-[4vh] w-[12vh]"} />
+          </Link>
+          <Image src={ebaa} alt={"EBAA Logo"} className={"w-[12vh]"} />
+          <Image src={mbaa} alt={"MBAA Logo"} className={"w-[12vh]"} />
+        </div>
+
         <a
           href={"https://www.linkedin.com/company/jethouse-ltd/"}
           target={"_blank"}
