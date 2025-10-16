@@ -18,9 +18,9 @@
     "embla-carousel-wheel-gestures": "^8.0.0-rc05",
     "lottie-colorify": "^0.8.0",
     "lottie-react": "^2.4.0",
-    "mongoose": "^8.4.0",
+    "lucide-react": "^0.545.0",
     "motion": "^11.15.0",
-    "next": "^15.1.2",
+    "next": "^15.5.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "sharp": "^0.33.4"

@@ -33,7 +33,7 @@ export const generateStaticParams = async () =>
         },
       },
     )
-    .then((res) => res.data.docs.map((doc) => ({ id: doc.id })));
+    .then((res) => res.data.docs.map((doc) => ({ id: doc.id })) || []);
 
 const Article = async ({ params }: { params: Promise<{ id: string }> }) => {
   const id = (await params).id,

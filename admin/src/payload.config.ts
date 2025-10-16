@@ -1,7 +1,7 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { s3Storage } from '@payloadcms/storage-s3'
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
-import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import { FixedToolbarFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
 import path from 'path'
 import { buildConfig, PayloadRequest } from 'payload'
 import { fileURLToPath } from 'url'
@@ -11,9 +11,9 @@ import { Resend } from 'resend'
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
 import { Jet } from './collections/Jet'
-
 import { Category } from './collections/Category'
 import { News } from './collections/News'
+import Emergency from '@/collections/Emergency'
 
 import Email from '@/components/email'
 
@@ -61,13 +61,16 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
+  globals: [Emergency],
   collections: [Users, Media, Jet, Category, News],
   upload: {
     limits: {
       fileSize: 5000000,
     },
   },
-  editor: lexicalEditor(),
+  editor: lexicalEditor({
+    features: ({ defaultFeatures }) => [...defaultFeatures, FixedToolbarFeature()],
+  }),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
