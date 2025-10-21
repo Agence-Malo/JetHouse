@@ -131,7 +131,7 @@ const WhyJethouse = () => {
         </Accordion>
       </div>
       <Image
-        className={`lg:h-[64dvh] lg:w-auto w-full h-auto ${isInView ? "opacity-100" : "opacity-0"} transition-opacity duration-1000 ease-in-out`}
+        className={`lg:h-[64dvh] lg:w-1/3 lg:object-cover w-full h-auto ${isInView ? "opacity-100" : "opacity-0"} transition-opacity duration-1000 ease-in-out`}
         src={image}
         alt={"Falcon 6X"}
         ref={ref}
