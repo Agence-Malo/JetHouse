@@ -202,7 +202,7 @@ const Contact = () => {
               isRequired={true}
               variant={"underlined"}
               isClearable={true}
-              onInput={handleInput}
+              onChange={handleInput}
               classNames={{
                 inputWrapper: [
                   "w-full",
@@ -224,7 +224,7 @@ const Contact = () => {
               isRequired={true}
               variant={"underlined"}
               isClearable={true}
-              onInput={handleInput}
+              onChange={handleInput}
               classNames={{
                 inputWrapper: [
                   "w-full",
@@ -245,7 +245,7 @@ const Contact = () => {
               isDisabled={pending}
               variant={"underlined"}
               isClearable={true}
-              onInput={handleInput}
+              onChange={handleInput}
               classNames={{
                 inputWrapper: [
                   "w-full",
