@@ -1,3 +1,15 @@
+# The FTP deploy action writes this manifest into the document root and it
+# lists every deployed file. Keep it reachable over FTP, not over HTTP.
+<Files ".ftp-deploy-sync-state.json">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</Files>
+
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
