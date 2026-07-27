@@ -6,6 +6,14 @@ on:
   repository_dispatch:
     types: [content-update]
 
+# Serializes deploys. Two overlapping runs on 2026-07-15 both ran with
+# dangerous-clean-slate and wiped the _next/ directory off the server.
+# cancel-in-progress stays false on purpose: cancelling a run mid-clean-slate
+# leaves the document root empty.
+concurrency:
+  group: ftp-deploy
+  cancel-in-progress: false
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -39,3 +47,55 @@ jobs:
           local-dir: ./web/out/
           server-dir: ${{secrets.FTP_SERVER_DIR}}
           dangerous-clean-slate: true
+
+      # The FTP action reports success even when the upload never landed.
+      # Sample real _next/ assets referenced by the served HTML and fail loudly
+      # if the server 404s them.
+      - name: Verify deployment
+        shell: bash
+        env:
+          SITE_URL: https://jethouse.aero
+        run: |
+          set -euo pipefail
+
+          echo "Waiting for FTP writes to settle..."
+          sleep 20
+
+          html=$(curl -fsS --max-time 30 -H 'Cache-Control: no-cache' \
+            "${SITE_URL}/?deploy-check=${GITHUB_RUN_ID}")
+
+          found=()
+          while IFS= read -r line; do
+            [ -n "$line" ] && found+=("$line")
+          done < <(
+            printf '%s' "$html" \
+              | grep -oE '/_next/static/[A-Za-z0-9._/-]+\.(js|css)' \
+              | sort -u
+          )
+
+          if [ "${#found[@]}" -lt 3 ]; then
+            echo "::error::Served HTML references only ${#found[@]} _next/ assets (expected >= 3)."
+            exit 1
+          fi
+
+          assets=("${found[@]:0:3}")
+          echo "Checking ${#assets[@]} of ${#found[@]} _next/ assets:"
+
+          failed=0
+          for asset in "${assets[@]}"; do
+            code=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 30 \
+              -H 'Cache-Control: no-cache' "${SITE_URL}${asset}")
+            if [ "$code" = "200" ]; then
+              echo "  OK    $code  $asset"
+            else
+              echo "  FAIL  $code  $asset"
+              failed=1
+            fi
+          done
+
+          if [ "$failed" -ne 0 ]; then
+            echo "::error::Deployment incomplete - _next/ assets missing on the server. The site will render unstyled."
+            exit 1
+          fi
+
+          echo "Deployment verified."
